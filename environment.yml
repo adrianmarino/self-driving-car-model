@@ -1,0 +1,27 @@
+name: self-driging-car-model
+channels:
+- https://conda.anaconda.org/menpo
+- defaults
+- conda-forge
+- anaconda
+dependencies:
+    - python==3.6
+    - numpy
+    - matplotlib
+    - jupyter
+    - opencv3
+    - pillow
+    - scikit-learn
+    - scikit-image
+    - scipy
+    - h5py
+    - eventlet
+    - flask-socketio
+    - seaborn
+    - pandas
+    - imageio
+    - moviepy
+    - tensorflow-gpu
+    - keras
+    - pip:
+        - opencv-contrib-python
