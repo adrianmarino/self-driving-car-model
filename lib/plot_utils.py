@@ -1,11 +1,14 @@
-from IPython.display import Image
-from IPython.display import display
 import matplotlib.pyplot as plt
 import cv2
 
 
-def show_img(path):
-    display(Image(path))
+def show_img(path, size=(17, 17)):
+    grid_display(
+        images=[cv2.imread(path)],
+        titles=[],
+        columns=1,
+        figure_size=size
+    )
 
 
 def show_example(features, labels):
