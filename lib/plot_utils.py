@@ -14,7 +14,7 @@ def show_example(features, labels):
         images=[cv2.imread(path) for path in ordered_paths],
         titles=['LEFT CAMERA', 'CENTER CAMERA', 'RIGHT CAMERA'],
         columns=3,
-        figure_size=(30, 35)
+        figure_size=(40, 40)
     )
     print("Steering Angle: ", labels[0])
 
