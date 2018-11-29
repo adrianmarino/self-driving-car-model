@@ -1,4 +1,4 @@
-name: self-driging-car-model
+name: self-driving-car-model
 channels:
 - https://conda.anaconda.org/menpo
 - defaults

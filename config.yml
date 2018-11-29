@@ -1,0 +1,22 @@
+dataset:
+  path: dataset/driving_log.csv
+  columns:
+    - center
+    - left
+    - right
+    - steering
+    - throttle
+    - reverse
+    - speed
+  features:
+    - center
+    - left
+    - right
+  labels:
+    - steering
+    # - throttle
+    # - reverse
+    # - speed
+
+train:
+  validation_set_size: 0.2
