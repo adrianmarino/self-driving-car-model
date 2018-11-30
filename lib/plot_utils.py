@@ -1,5 +1,13 @@
-import matplotlib.pyplot as plt
 import cv2
+import matplotlib.pyplot as plt
+from IPython.display import SVG, display
+from keras.utils.vis_utils import model_to_dot
+
+
+def graph_model(model):
+    converter = model_to_dot(model, show_shapes=True, show_layer_names=True)
+    image = converter.create(prog='dot', format='svg')
+    display(SVG(image))
 
 
 def show_img(path, size=(17, 17)):

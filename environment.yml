@@ -23,5 +23,7 @@ dependencies:
     - moviepy
     - tensorflow-gpu
     - keras
+    - pydot
+    - graphviz
     - pip:
         - opencv-contrib-python

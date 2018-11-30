@@ -1,6 +1,8 @@
 from keras.layers import Lambda, Conv2D, Dropout, Flatten, Dense
 from keras.models import Sequential
 
+from lib.model import Model
+
 
 class ModelFactory:
     @staticmethod
@@ -31,6 +33,8 @@ class ModelFactory:
         # Default activation is applied (ie. "linear" activation: a(x) = x).
         model.add(Dense(units=1))
 
-        return model
-
-
+        return Model(
+            model=model,
+            model_name='NVidia',
+            description_image_path='./images/nvidia-model.png'
+        )

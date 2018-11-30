@@ -1,5 +1,9 @@
 dataset:
   path: dataset/driving_log.csv
+  image:
+      width: 320
+      height: 160
+      channels: 3
   columns:
     - center
     - left
@@ -16,7 +20,8 @@ dataset:
     - steering
     # - throttle
     # - reverse
-    # - speed
+    # -
 
 train:
   validation_set_percent: 0.2
+  batch_size: 40
