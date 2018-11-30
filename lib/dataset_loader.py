@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from lib.dataset import DataSet
+from lib.dataset import Dataset
 
 
 class DatasetLoader:
@@ -11,12 +11,5 @@ class DatasetLoader:
     def __columns(self): return self.__config['dataset']['columns']
 
     def load(self, features, labels):
-        try:
-            data_frame = pd.read_csv(self.__path(), names=self.__columns())
-        except FileNotFoundError as error:
-            print(error)
-
-        return DataSet(
-            data_frame[features].values,
-            data_frame[labels].values
-        )
+        data_frame = pd.read_csv(self.__path(), names=self.__columns())
+        return Dataset(data_frame[features].values, data_frame[labels].values)

@@ -19,19 +19,13 @@ def show_img(path, size=(17, 17)):
     )
 
 
-def show_example(features, labels):
-    ordered_paths = [features[1], features[0], features[2]]
-    grid_display(
-        images=[cv2.imread(path) for path in ordered_paths],
-        titles=['LEFT CAMERA', 'CENTER CAMERA', 'RIGHT CAMERA'],
-        columns=3,
-        figure_size=(40, 40)
-    )
-    print("Steering Angle: ", labels[0])
-
-
 def grid_display(
-        images, titles, columns=2, figure_size=(10, 10)):
+        images,
+        titles,
+        columns=2,
+        figure_size=(10, 10),
+        font_size=28
+):
     fig = plt.figure(figsize=figure_size)
     column = 0
     for i in range(len(images)):
@@ -44,5 +38,5 @@ def grid_display(
         plt.imshow(images[i], cmap=plt.cm.Greys)
         plt.axis('off')
         if len(titles) >= len(images):
-            plt.title(titles[i])
+            plt.title(titles[i], {'fontsize': font_size})
     plt.show()

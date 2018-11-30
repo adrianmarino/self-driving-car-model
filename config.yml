@@ -25,3 +25,6 @@ dataset:
 train:
   validation_set_percent: 0.2
   batch_size: 40
+  augment:
+    work_path: ./temp
+    threshold: 0.6
