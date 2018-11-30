@@ -38,7 +38,7 @@ class Model:
         )
 
     def show(self):
-        print("\n\n\nMODEL SUMMARY\n")
+        print("\n\n\nMODEL LAYERS\n")
         self.model.summary()
         print("\n\n\nMODEL GRAPH\n")
         if self.description_image_path is not None:
