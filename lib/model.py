@@ -20,21 +20,25 @@ class Model:
             self,
             train_generator,
             validation_generator,
-            samples_per_epoch=20000,
+            steps_per_epoch=20000,
             epochs=1,
             max_q_size=1,
             validation_samples_size=1,
+            use_multiprocessing=True,
+            workers=8,
             callbacks=()
     ):
-        self.model.fit_generator(
+        return self.model.fit_generator(
             train_generator,
-            samples_per_epoch,
+            steps_per_epoch,
             epochs,
             max_q_size=max_q_size,
             validation_data=validation_generator,
             nb_val_samples=validation_samples_size,
             callbacks=callbacks,
-            verbose=1
+            verbose=1,
+            use_multiprocessing=use_multiprocessing,
+            workers=workers
         )
 
     def show(self):
