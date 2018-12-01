@@ -34,8 +34,15 @@ class CheckpointFactory:
         filename += 'val_acc_{val_acc:.4f}--'
         filename += 'val_loss_{loss:.4f}--'
         filename += 'val_acc_{acc:.4f}'
+        return filename
 
 
 class PlotLossesFactory:
-    def create(plot_interval=1, evaluate_interval=10, x_val=None, y_val_categorical=None):
+    @staticmethod
+    def create(
+            plot_interval=1,
+            evaluate_interval=10,
+            x_val=None,
+            y_val_categorical=None
+    ):
         return PlotLosses(plot_interval, evaluate_interval, x_val, y_val_categorical)
