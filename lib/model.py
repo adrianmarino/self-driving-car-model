@@ -15,7 +15,11 @@ class Model:
             loss='mean_squared_error',
             optimizer=Adam(lr=1.0e-4)
     ):
-        self.model.compile(loss=loss, optimizer=optimizer)
+        self.model.compile(
+            loss=loss,
+            optimizer=optimizer,
+            metrics=['accuracy']
+        )
 
     def train(
             self,
@@ -32,7 +36,8 @@ class Model:
             validation_data=validation_generator,
             callbacks=callbacks,
             verbose=1,
-            use_multiprocessing=True
+            use_multiprocessing=True,
+            workers=8
         )
 
     def show(self):

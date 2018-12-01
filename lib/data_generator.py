@@ -1,5 +1,5 @@
 import numpy as np
-from tensorflow.python.keras.utils import Sequence
+from keras.utils import Sequence
 from lib.sample_augmenter import NullSampleAugmenter
 
 
@@ -22,12 +22,15 @@ class SteeringWheelAngleDataGenerator(Sequence):
         self.on_epoch_end()
 
     def __getitem__(self, index):
-        images = np.empty(self.batch_size, *self.input_shape)
-        steers = np.empty(self.batch_size, *self.output_shape)
+        images = np.empty((self.batch_size, *self.input_shape))
+        steers = np.empty((self.batch_size, *self.output_shape))
+        samples_batch = self.dataset.subset(index, size=self.batch_size)
 
-        for index, sample in iter(self.dataset.subset(index, size=self.batch_size)):
+        index = 0
+        for sample in samples_batch:
             image, steers[index] = self.sample_augmenter.augment(sample)
             images[index] = self.image_preprocessor.process(image)
+            index += 1
 
         return images, steers
 

@@ -3,7 +3,7 @@ from lib.image_augmentation_utils import choose_image, random_image_flip, random
 
 
 class NullSampleAugmenter:
-    def augment(self, sample): return sample
+    def augment(self, sample): return sample.center_image(), sample.steering_angle()
 
 
 class SampleAugmenter:
@@ -13,17 +13,14 @@ class SampleAugmenter:
         self.translate_range_y = translate_range_y
 
     def augment(self, sample):
-        if np.random.rand() >= self.augment_threshold:
-            return sample
-
-        center_image_path, left_image_path, right_image_path = sample.images()
-        steering_angle = sample.steering_angle()
+        if np.random.rand() > self.augment_threshold:
+            return sample.center_image(), sample.steering_angle()
 
         image, steering_angle = choose_image(
-            center_image_path,
-            left_image_path,
-            right_image_path,
-            steering_angle
+            sample.center_image_path(),
+            sample.left_image_path(),
+            sample.right_image_path(),
+            sample.steering_angle()
         )
 
         image, steering_angle = random_image_flip(image, steering_angle)

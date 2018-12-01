@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 
 from lib.sample import Sample
 
+
 class Dataset:
     def __init__(self, features, labels, shuffle=False):
         self.features = features
@@ -36,11 +37,14 @@ class Dataset:
             self.labels[initial_position:final_position]
         )
 
-    def __iter__(self): self.index = 0
+    def __iter__(self):
+        self.index = 0
+        return self
 
     def __next__(self):
-        sample = None
         if self.index < len(self):
             sample = self[self.index]
             self.index += 1
-        return sample
+            return sample
+        else:
+            raise StopIteration
