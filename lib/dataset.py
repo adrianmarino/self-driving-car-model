@@ -3,7 +3,6 @@ from sklearn.model_selection import train_test_split
 
 from lib.sample import Sample
 
-
 class Dataset:
     def __init__(self, features, labels, shuffle=False):
         self.features = features

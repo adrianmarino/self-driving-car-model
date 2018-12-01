@@ -1,6 +1,16 @@
 import matplotlib.pyplot as plt
 from IPython.display import SVG, display
 from keras.utils.vis_utils import model_to_dot
+import seaborn as sns
+
+
+def show_distribution(dataset):
+    sns.set(rc={'figure.figsize': (20, 5)})
+    b = sns.distplot(dataset.labels)
+    b.axes.set_title("Title", fontsize=15)
+    b.set_xlabel("Steering angle", fontsize=15)
+    b.set_ylabel("Numner of Occurrences", fontsize=15)
+    plt.show()
 
 
 def graph_model(model):
