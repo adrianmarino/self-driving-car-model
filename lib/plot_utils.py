@@ -4,8 +4,22 @@ from keras.utils.vis_utils import model_to_dot
 import seaborn as sns
 
 
+def show_sample(image, angle=None):
+    titles = []
+    if angle is not None:
+        titles.append(f'Steering Angle: {angle}')
+
+    grid_display(
+        images=[image],
+        titles=titles,
+        columns=1,
+        figure_size=(6, 6),
+        font_size=14
+    )
+
+
 def show_distribution(dataset):
-    sns.set(rc={'figure.figsize': (20, 5)})
+    sns.set(rc={'figure.figsize': (22, 5)})
     b = sns.distplot(dataset.labels)
     b.axes.set_title("Title", fontsize=15)
     b.set_xlabel("Steering angle", fontsize=15)

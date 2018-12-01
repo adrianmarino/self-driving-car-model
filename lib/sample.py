@@ -14,7 +14,7 @@ class Sample:
             titles=['Left Camera', 'Center Camera', 'Right Camera'],
             columns=3,
             figure_size=(40, 40),
-            font_size=35
+            font_size=32
         )
         print(f'Steering Angle: {self.labels[0]}\n\n')
 
@@ -29,5 +29,9 @@ class Sample:
     def images(self): return [load_image(path) for path in self.ordered_image_paths()]
 
     def center_image(self): return load_image(self.center_image_path())
+
+    def left_image(self): return load_image(self.left_image_path())
+
+    def right_image(self): return load_image(self.right_image_path())
 
     def steering_angle(self): return self.labels[0]

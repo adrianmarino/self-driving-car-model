@@ -32,8 +32,7 @@ class Model:
             validation_data=validation_generator,
             callbacks=callbacks,
             verbose=1,
-            use_multiprocessing=True,
-            workers=8
+            use_multiprocessing=True
         )
 
     def show(self):

@@ -1,6 +1,5 @@
 import numpy as np
-
-from lib.image_utils import augment
+from lib.image_augmentation_utils import choose_image, random_image_flip, random_image_translate, random_image_shadow, random_image_brightness
 
 
 class NullSampleAugmenter:
@@ -20,11 +19,24 @@ class SampleAugmenter:
         center_image_path, left_image_path, right_image_path = sample.images()
         steering_angle = sample.steering_angle()
 
-        return augment(
+        image, steering_angle = choose_image(
             center_image_path,
             left_image_path,
             right_image_path,
+            steering_angle
+        )
+
+        image, steering_angle = random_image_flip(image, steering_angle)
+
+        image, steering_angle = random_image_translate(
+            image,
             steering_angle,
             self.translate_range_x,
             self.translate_range_y
         )
+
+        image = random_image_shadow(image, image.shape[1], image.shape[0])
+
+        image = random_image_brightness(image)
+
+        return image, steering_angle
