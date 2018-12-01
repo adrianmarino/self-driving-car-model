@@ -1,4 +1,3 @@
-import cv2
 import matplotlib.pyplot as plt
 from IPython.display import SVG, display
 from keras.utils.vis_utils import model_to_dot
@@ -10,9 +9,9 @@ def graph_model(model):
     display(SVG(image))
 
 
-def show_img(path, size=(17, 17)):
+def show_image(image, size=(17, 17)):
     grid_display(
-        images=[cv2.imread(path)],
+        images=[image],
         titles=[],
         columns=1,
         figure_size=size

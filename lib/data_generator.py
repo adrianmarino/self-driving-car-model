@@ -1,7 +1,5 @@
 import numpy as np
 from tensorflow.python.keras.utils import Sequence
-
-from lib.image_preprocessor import ImagePreprocessor
 from lib.sample_augmenter import NullSampleAugmenter
 
 
@@ -12,8 +10,8 @@ class SteeringWheelAngleDataGenerator(Sequence):
             input_shape,
             output_shape,
             batch_size,
-            sample_augmenter=NullSampleAugmenter(),
-            image_preprocessor=ImagePreprocessor()
+            image_preprocessor,
+            sample_augmenter=NullSampleAugmenter()
     ):
         self.dataset = dataset
         self.input_shape = input_shape
@@ -33,8 +31,6 @@ class SteeringWheelAngleDataGenerator(Sequence):
 
         return images, steers
 
-    def on_epoch_end(self): self.dataset = self.dataset.shuffle()
-
     def __len__(self): return int(np.floor(len(self.dataset) / self.batch_size))
 
-
+    def on_epoch_end(self): self.dataset = self.dataset.shuffle()

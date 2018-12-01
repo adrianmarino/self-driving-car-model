@@ -1,6 +1,7 @@
 from keras.optimizers import Adam
 
-from lib.plot_utils import graph_model, show_img
+from lib.image_utils import load_image
+from lib.plot_utils import graph_model, show_image
 
 
 class Model:
@@ -18,27 +19,21 @@ class Model:
 
     def train(
             self,
-            train_generator,
+            generator,
             validation_generator,
             steps_per_epoch=20000,
-            epochs=1,
-            max_q_size=1,
-            validation_samples_size=1,
-            use_multiprocessing=True,
-            workers=8,
-            callbacks=()
+            epochs=10,
+            callbacks=[]
     ):
         return self.model.fit_generator(
-            train_generator,
-            steps_per_epoch,
-            epochs,
-            max_q_size=max_q_size,
+            generator=generator,
+            steps_per_epoch=steps_per_epoch,
+            epochs=epochs,
             validation_data=validation_generator,
-            nb_val_samples=validation_samples_size,
             callbacks=callbacks,
             verbose=1,
-            use_multiprocessing=use_multiprocessing,
-            workers=workers
+            use_multiprocessing=True,
+            workers=8
         )
 
     def show(self):
@@ -46,5 +41,5 @@ class Model:
         self.model.summary()
         print("\n\n\nMODEL GRAPH\n")
         if self.description_image_path is not None:
-            show_img(self.description_image_path, size=(12, 12))
+            show_image(load_image(self.description_image_path), size=(12, 12))
         graph_model(self.model)
