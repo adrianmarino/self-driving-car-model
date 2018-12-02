@@ -6,10 +6,14 @@ from lib.dataset import Dataset
 class DatasetLoader:
     def __init__(self, config): self.__config = config
 
-    def __path(self): return os.path.join(os.getcwd(), self.__config['dataset']['path'])
+    def __paths(self): return [os.path.join(os.getcwd(), path) for path in self.__config['dataset']['paths']]
 
     def __columns(self): return self.__config['dataset']['columns']
 
     def load(self, features, labels):
-        data_frame = pd.read_csv(self.__path(), names=self.__columns())
+        data_frames = []
+        for path in self.__paths():
+            data_frames.append(pd.read_csv(path, names=self.__columns()))
+        data_frame = pd.concat(data_frames)
+
         return Dataset(data_frame[features].values, data_frame[labels].values)

@@ -1,5 +1,7 @@
 dataset:
-  path: datasets/dataset_1/driving_log.csv
+  paths:
+    - datasets/dataset_2/driving_log.csv
+    - datasets/dataset_3/driving_log.csv
   columns:
     - center
     - left
@@ -20,21 +22,19 @@ dataset:
 
 network:
     input_shape:
-      height: 66
-      width: 200
+      height: 160
+      width: 320
       channels: 3
-    activation: 'elu'
-    dropout: 0.4
 
 train:
+  batch_size: 80
   validation_set_percent: 0.3
-  batch_size: 40
   augment:
     threshold: 0.6
     choose_adjustment_angle: 0.25
     translate_range_x: 100
     translate_range_y: 10
-    translate_angle_delta: 0.009
+    translate_angle_delta: 0.002
   checkpoint_path: checkpoints
   preprocess:
     crop:
