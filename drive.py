@@ -19,7 +19,7 @@ app = Flask(__name__)
 model = None
 prev_image_array = None
 
-k_p = 0.3
+k_p = 0.2
 target_speed = 12
 
 
@@ -27,14 +27,17 @@ target_speed = 12
 @sio.on('telemetry')
 def telemetry(sid, data):
     if data:
-        next_steering_angle = float(model.predict(
-            current_camera_image(data),
-            batch_size=1
-        ))
-        throttle = next_throttle_value(get_speed(data))
+        try:
+            next_steering_angle = float(model.predict(
+                current_camera_image(data),
+                batch_size=1
+            ))
+            throttle = next_throttle_value(get_speed(data))
 
-        print(f'Angle: {next_steering_angle}, Throttle: {throttle}')
-        send_control(next_steering_angle, throttle)
+            print(f'Angle: {next_steering_angle}, Throttle: {throttle}')
+            send_control(next_steering_angle, throttle)
+        except Exception as e:
+            print(f'ERROR: {e}')
     else:
         sio.emit('manual', data={}, skip_sid=True)
 
