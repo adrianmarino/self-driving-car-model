@@ -20,10 +20,13 @@ def show_sample(image, angle=None):
 
 def show_distribution(dataset, title='Title'):
     sns.set(rc={'figure.figsize': (22, 5)})
-    b = sns.distplot(dataset.labels)
-    b.axes.set_title(title, fontsize=15)
+
+    b = sns.distplot(dataset.labels, hist=True, kde=False)
+
+    b.axes.set_title(f'{title} (Samples: {len(dataset)})', fontsize=15)
     b.set_xlabel("Steering angle", fontsize=15)
     b.set_ylabel("Number of occurrences", fontsize=15)
+
     plt.show()
 
 

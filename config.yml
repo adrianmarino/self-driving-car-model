@@ -31,7 +31,7 @@ train:
   batch_size: 40
   augment:
     threshold: 0.6
-    choose_adjustment_angle: 0.4
+    choose_adjustment_angle: 0.25
     translate_range_x: 100
     translate_range_y: 10
     translate_angle_delta: 0.009

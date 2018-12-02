@@ -1,5 +1,7 @@
 import numpy as np
 from keras.utils import Sequence
+
+from lib.dataset import Dataset
 from lib.sample_augmenter import NullSampleAugmenter
 
 
@@ -11,7 +13,8 @@ class SteeringWheelAngleDataGenerator(Sequence):
             output_shape,
             batch_size,
             image_preprocessor,
-            sample_augmenter=NullSampleAugmenter()
+            sample_augmenter=NullSampleAugmenter(),
+            shuffle_per_epoch=False
     ):
         self.dataset = dataset
         self.input_shape = input_shape
@@ -19,6 +22,7 @@ class SteeringWheelAngleDataGenerator(Sequence):
         self.batch_size = batch_size
         self.sample_augmenter = sample_augmenter
         self.image_preprocessor = image_preprocessor
+        self.shuffle_per_epoch=shuffle_per_epoch
         self.on_epoch_end()
 
     def __getitem__(self, index):
@@ -36,4 +40,22 @@ class SteeringWheelAngleDataGenerator(Sequence):
 
     def __len__(self): return int(np.floor(len(self.dataset) / self.batch_size))
 
-    def on_epoch_end(self): self.dataset = self.dataset.shuffle()
+    def on_epoch_end(self):
+        if self.shuffle_per_epoch:
+            self.dataset = self.dataset.shuffle()
+
+    def generate(self, batch_count=32):
+        if batch_count < 1:
+            raise Exception("A batch_count >= 1 is required!")
+
+        images = np.empty((self.batch_size, *self.input_shape))
+        steers = np.empty((self.batch_size, *self.output_shape))
+
+        print('Generate batches...', end=' ')
+        for batch_index in range(0, batch_count):
+            augmented_images, augmented_steers = self[batch_index]
+            print(f'{batch_index+1}', end=' ')
+            images = np.concatenate((images, augmented_images))
+            steers = np.concatenate((steers, augmented_steers))
+
+        return Dataset(images, steers)
