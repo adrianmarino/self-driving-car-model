@@ -3,16 +3,22 @@ import numpy as np
 from lib.image_utils import load_image
 
 
-def choose_image(center_image_path, left_image_path, right_image_path, steering_angle):
+def choose_image(
+        center_image_path,
+        left_image_path,
+        right_image_path,
+        steering_angle,
+        adjustment_angle=0.2
+):
     """
     Randomly choose an image from the center, left or right, and adjust
     the steering angle.
     """
     choice = np.random.choice(3)
     if choice == 0:
-        return load_image(left_image_path), steering_angle + 0.2
+        return load_image(left_image_path), steering_angle + adjustment_angle
     elif choice == 1:
-        return load_image(right_image_path), steering_angle - 0.2
+        return load_image(right_image_path), steering_angle - adjustment_angle
     return load_image(center_image_path), steering_angle
 
 
@@ -26,13 +32,19 @@ def random_image_flip(image, steering_angle):
     return image, steering_angle
 
 
-def random_image_translate(image, steering_angle, range_x, range_y):
+def random_image_translate(
+        image,
+        steering_angle,
+        range_x,
+        range_y,
+        angle_delta=0.002
+):
     """
     Randomly shift the image vertically and horizontally (translation).
     """
     trans_x = range_x * (np.random.rand() - 0.5)
     trans_y = range_y * (np.random.rand() - 0.5)
-    steering_angle += trans_x * 0.002
+    steering_angle += trans_x * angle_delta
     trans_m = np.float32([[1, 0, trans_x], [0, 1, trans_y]])
     height, width = image.shape[:2]
     image = cv2.warpAffine(image, trans_m, (width, height))

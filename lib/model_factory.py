@@ -7,7 +7,7 @@ from lib.model import Model
 class ModelFactory:
     @staticmethod
     def create_nvidia_model(
-            input_shape=(160, 320, 3),
+            input_shape=(66, 200, 3),
             input_normalization=lambda x: x / 127.5 - 1.0,
             cnn_end_dropout_rate=0.5,
             activation='elu'

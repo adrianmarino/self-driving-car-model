@@ -12,12 +12,13 @@ class Dataset:
         if shuffle:
             np.random.shuffle(self.indexes)
 
-    def split(self, percent):
+    def split(self, percent, shuffle=True):
         train_features, validation_features, train_labels, validation_labels = train_test_split(
             self.features,
             self.labels,
             test_size=percent,
-            random_state=0
+            random_state=0,
+            shuffle=shuffle
         )
         return Dataset(train_features, train_labels), Dataset(validation_features, validation_labels)
 

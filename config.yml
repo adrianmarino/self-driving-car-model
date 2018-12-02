@@ -1,9 +1,5 @@
 dataset:
-  path: dataset/driving_log.csv
-  image:
-      width: 320
-      height: 160
-      channels: 3
+  path: datasets/dataset_1/driving_log.csv
   columns:
     - center
     - left
@@ -22,11 +18,25 @@ dataset:
     # - reverse
     # -
 
+network:
+    input_shape:
+      height: 66
+      width: 200
+      channels: 3
+    activation: 'elu'
+    dropout: 0.4
+
 train:
-  validation_set_percent: 0.2
+  validation_set_percent: 0.3
   batch_size: 40
   augment:
     threshold: 0.6
+    choose_adjustment_angle: 0.4
     translate_range_x: 100
     translate_range_y: 10
+    translate_angle_delta: 0.009
   checkpoint_path: checkpoints
+  preprocess:
+    crop:
+      top_offset: 60
+      bottom_offset: 25
