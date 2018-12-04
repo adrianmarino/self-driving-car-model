@@ -22,21 +22,21 @@ dataset:
 
 network:
     input_shape:
-      height: 160
-      width: 320
+      height: 66
+      width: 200
       channels: 3
 
 train:
-  batch_size: 80
-  validation_set_percent: 0.3
+  batch_size: 200
+  validation_set_percent: 0.2
   augment:
-    threshold: 0.6
-    choose_adjustment_angle: 0.25
+    threshold: 0.7
+    choose_adjustment_angle: 0.2
     translate_range_x: 100
     translate_range_y: 10
-    translate_angle_delta: 0.002
+    translate_angle_delta: 0.0035
   checkpoint_path: checkpoints
   preprocess:
     crop:
-      top_offset: 60
+      top_offset: 65
       bottom_offset: 25

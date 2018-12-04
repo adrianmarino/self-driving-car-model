@@ -8,10 +8,12 @@ class Sample:
         self.labels = labels
 
     def show(self):
+        left, center, right = self.images()
+
         print("\n\n\nImages")
         grid_display(
-            images=self.images(),
-            titles=['Left Camera', 'Center Camera', 'Right Camera'],
+            images=[left, center, right],
+            titles=[f'Left Camera {left.shape}', f'Center Camera {center.shape}', f'Right Camera {left.shape}'],
             columns=3,
             figure_size=(40, 40),
             font_size=32

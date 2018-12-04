@@ -10,17 +10,6 @@ class Model:
         self.name = model_name
         self.description_image_path = description_image_path
 
-    def compile(
-            self,
-            loss='mean_squared_error',
-            optimizer=Adam(lr=1.0e-4)
-    ):
-        self.model.compile(
-            loss=loss,
-            optimizer=optimizer,
-            metrics=['accuracy']
-        )
-
     def train(
             self,
             generator,

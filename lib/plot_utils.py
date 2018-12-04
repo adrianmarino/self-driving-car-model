@@ -5,13 +5,14 @@ import seaborn as sns
 
 
 def show_sample(image, angle=None):
-    titles = []
+    title = f'Shape: {image.shape}'
+
     if angle is not None:
-        titles.append(f'Steering Angle: {angle}')
+        title += f'  -  Steering Angle: {angle:.6f}'
 
     grid_display(
         images=[image],
-        titles=titles,
+        titles=[title],
         columns=1,
         figure_size=(6, 6),
         font_size=14

@@ -19,8 +19,8 @@ app = Flask(__name__)
 model = None
 prev_image_array = None
 
-k_p = 0.2
-target_speed = 12
+k_p = 0.15
+target_speed = 15
 
 
 # registering event handler for the server
@@ -40,6 +40,7 @@ def telemetry(sid, data):
             print(f'ERROR: {e}')
     else:
         sio.emit('manual', data={}, skip_sid=True)
+
 
 def next_throttle_value(current_speed):
     # The driving model currently just outputs a constant throttle. Feel free to edit this.
