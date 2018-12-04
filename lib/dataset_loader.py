@@ -13,7 +13,10 @@ class DatasetLoader:
     def load(self, features, labels):
         data_frames = []
         for path in self.__paths():
-            data_frames.append(pd.read_csv(path, names=self.__columns()))
+            dataset = pd.read_csv(path, names=self.__columns())
+            print(f'dataset({len(dataset)}) loadded {path} ')
+            data_frames.append(dataset)
+
         data_frame = pd.concat(data_frames)
 
         return Dataset(data_frame[features].values, data_frame[labels].values)

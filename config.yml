@@ -1,7 +1,17 @@
 dataset:
   paths:
+    # UDacity standard dataset..
     - datasets/dataset_2/driving_log.csv
+    #  Made with x-box joystick...
     - datasets/dataset_3/driving_log.csv
+    #  Drive near both road edges(2 laps) & drink driving(1 lap)...
+    - datasets/dataset_4/driving_log.csv
+    #  Drive near both road edges(6 laps)...
+    - datasets/dataset_5/driving_log.csv
+    #  Drink driving (3 laps)...
+    - datasets/dataset_6/driving_log.csv
+    #  Normal driving (4 laps)...
+    - datasets/dataset_7/driving_log.csv
   columns:
     - center
     - left
@@ -27,16 +37,20 @@ network:
       channels: 3
 
 train:
-  batch_size: 200
+  batch_size: 300
   validation_set_percent: 0.2
   augment:
-    threshold: 0.7
-    choose_adjustment_angle: 0.2
+    threshold: 0.6
+    choose_adjustment_angle: 0.25
     translate_range_x: 100
     translate_range_y: 10
     translate_angle_delta: 0.0035
   checkpoint_path: checkpoints
   preprocess:
     crop:
-      top_offset: 65
+      top_offset: 80
       bottom_offset: 25
+
+simulator:
+    speed: 20
+    k_p: 0.2

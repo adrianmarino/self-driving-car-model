@@ -10,6 +10,8 @@ from keras.models import load_model
 from lib.image_preprocessor import ImagePreprocessor
 from lib.config import Config
 
+cfg = Config('./config.yml')
+    
 # initialize our server
 sio = socketio.Server()
 
@@ -19,8 +21,8 @@ app = Flask(__name__)
 model = None
 prev_image_array = None
 
-k_p = 0.15
-target_speed = 15
+k_p = float(cfg['simulator']['k_p'])
+target_speed = float(cfg['simulator']['speed'])
 
 
 # registering event handler for the server
@@ -92,8 +94,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     model = load_model(args.model)
-
-    cfg = Config('./config.yml')
 
     image_preprocessor = ImagePreprocessor(
         top_offset=cfg['train']['preprocess']['crop']['top_offset'],

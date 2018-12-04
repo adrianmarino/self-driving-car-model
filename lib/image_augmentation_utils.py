@@ -8,7 +8,7 @@ def choose_image(
         left_image_path,
         right_image_path,
         steering_angle,
-        adjustment_angle=0.2
+        adjustment_angle=0.25
 ):
     """
     Randomly choose an image from the center, left or right, and adjust
