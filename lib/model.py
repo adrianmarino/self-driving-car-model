@@ -36,3 +36,8 @@ class Model:
         if self.description_image_path is not None:
             show_image(load_image(self.description_image_path), size=(12, 12))
         graph_model(self.model)
+
+    def evaluate(self, features, labels):
+        return self.model.evaluate(features, labels, verbose=0)
+
+    def load_weights(self, path='model.h5'): self.model.load_weights(path)

@@ -6,17 +6,17 @@ from IPython.display import clear_output
 class PlotLosses(keras.callbacks.Callback):
     def __init__(
             self,
-            plot_interval=1,
-            evaluate_interval=10,
-            x_val=None,
-            y_val_categorical=None
+            validation_generator,
+            plot_interval=2,
+            evaluate_interval=10
     ):
         super().__init__()
         self.plot_interval = plot_interval
         self.evaluate_interval = evaluate_interval
-        self.x_val = x_val
-        self.y_val_categorical = y_val_categorical
+        self.validation_generator = validation_generator
         self.i = 0
+        self.val_batch_count = len(self.validation_generator)
+        self.val_bach_index = 0
         self.x = []
         self.losses = []
         self.val_losses = []
@@ -24,7 +24,8 @@ class PlotLosses(keras.callbacks.Callback):
         self.val_acc = []
         self.logs = []
 
-    def on_train_begin(self, logs={}): print('Begin training')
+    def on_train_begin(self, logs={}):
+        print('Begin training')
 
     def on_epoch_end(self, epoch, logs={}):
         if self.evaluate_interval is None:
@@ -56,11 +57,20 @@ class PlotLosses(keras.callbacks.Callback):
             self.losses.append(logs.get('loss'))
             self.acc.append(logs.get('acc'))
 
-            if self.x_val is not None:
-                score = self.model.evaluate(
-                    self.x_val,
-                    self.y_val_categorical,
-                    verbose=0
-                )
+            if self.validation_generator is not None:
+                val_batch = self.validation_generator[self.val_bach_index]
+                score = self.model.evaluate(val_batch[0], val_batch[1], verbose=0)
                 self.val_losses.append(score[0])
                 self.val_acc.append(score[1])
+                print(f' - val_loss: {score[0]:.4f} - val_acc: {score[1]:.4f}')
+
+        self.increment_batch_index()
+
+    def increment_batch_index(self):
+        if self.val_bach_index == self.val_batch_count:
+            self.val_bach_index = 0
+        else:
+            self.val_bach_index += 1
+
+
+

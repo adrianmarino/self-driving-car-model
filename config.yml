@@ -1,17 +1,30 @@
 dataset:
   paths:
-    # UDacity standard dataset..
-    - datasets/dataset_2/driving_log.csv
-    #  Made with x-box joystick...
-    - datasets/dataset_3/driving_log.csv
-    #  Drive near both road edges(2 laps) & drink driving(1 lap)...
-    - datasets/dataset_4/driving_log.csv
-    #  Drive near both road edges(6 laps)...
-    - datasets/dataset_5/driving_log.csv
-    #  Drink driving (3 laps)...
-    - datasets/dataset_6/driving_log.csv
-    #  Normal driving (4 laps)...
-    - datasets/dataset_7/driving_log.csv
+    train:
+      # UDacity standard dataset..
+      - datasets/dataset_2/driving_log.csv
+      #  Made with x-box joystick...
+      - datasets/dataset_3/driving_log.csv
+      #  Drive near both road edges(2 laps) & drink driving(1 lap)...
+      - datasets/dataset_4/driving_log.csv
+      #  Drive near both road edges(6 laps)...
+      - datasets/dataset_5/driving_log.csv
+      #  Drink driving (3 laps)...
+      - datasets/dataset_6/driving_log.csv
+      #  Normal driving (4 laps)...
+      - datasets/dataset_7/driving_log.csv
+      #  Normal reverse driving (6 laps)...
+      - datasets/dataset_8/driving_log.csv
+      #  Normal driving (6 laps)...
+      - datasets/dataset_9/driving_log.csv
+      #  Normal reserve driving (5 laps)...
+      - datasets/dataset_11/driving_log.csv
+       #  Normal reserve driving (10 laps)...
+      - datasets/dataset_12/driving_log.csv
+      - datasets/dataset_13/driving_log.csv
+      - datasets/dataset_14/driving_log.csv
+      #  Test dataset normal driving (3 laps)...
+      - datasets/dataset_10/driving_log.csv
   columns:
     - center
     - left
@@ -37,8 +50,8 @@ network:
       channels: 3
 
 train:
-  batch_size: 300
-  validation_set_percent: 0.2
+  batch_size: 100
+  validation_set_percent: 0.44
   augment:
     threshold: 0.6
     choose_adjustment_angle: 0.25
@@ -48,9 +61,9 @@ train:
   checkpoint_path: checkpoints
   preprocess:
     crop:
-      top_offset: 80
+      top_offset: 55
       bottom_offset: 25
 
 simulator:
-    speed: 20
-    k_p: 0.2
+    speed: 30
+    k_p: 0.35

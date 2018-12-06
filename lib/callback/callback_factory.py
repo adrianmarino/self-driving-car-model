@@ -40,9 +40,8 @@ class CheckpointFactory:
 class PlotLossesFactory:
     @staticmethod
     def create(
+            validation_generator,
             plot_interval=1,
-            evaluate_interval=10,
-            x_val=None,
-            y_val_categorical=None
+            evaluate_interval=10
     ):
-        return PlotLosses(plot_interval, evaluate_interval, x_val, y_val_categorical)
+        return PlotLosses(validation_generator, plot_interval, evaluate_interval)
