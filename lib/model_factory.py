@@ -10,6 +10,7 @@ class ModelFactory:
             input_shape=(66, 200, 3),
             activation='relu',
             loss='mean_squared_error',
+            metrics=[],
             optimizer=Adam(lr=0.001)
     ):
         model = Sequential()
@@ -49,7 +50,7 @@ class ModelFactory:
 
         model.add(Dense(units=1))
 
-        model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
+        model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
 
         return Model(
             model=model,

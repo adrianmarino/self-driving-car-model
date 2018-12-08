@@ -19,14 +19,23 @@ def show_sample(image, angle=None):
     )
 
 
-def show_distribution(dataset, title='Title'):
+def show_histogram(dataset, title=''):
+    histogram(dataset.labels, x_label="Steering angle", title=title)
+
+
+def histogram(
+        data,
+        x_label= "X values",
+        y_label= "Number of occurrences",
+        title='Title'
+):
     sns.set(rc={'figure.figsize': (22, 5)})
 
-    b = sns.distplot(dataset.labels, hist=True, kde=False)
+    b = sns.distplot(data, hist=True, kde=False)
 
-    b.axes.set_title(f'{title} (Samples: {len(dataset)})', fontsize=15)
-    b.set_xlabel("Steering angle", fontsize=15)
-    b.set_ylabel("Number of occurrences", fontsize=15)
+    b.axes.set_title(f'{title} (Samples: {len(data)})', fontsize=15)
+    b.set_xlabel(x_label, fontsize=15)
+    b.set_ylabel(y_label, fontsize=15)
 
     plt.show()
 

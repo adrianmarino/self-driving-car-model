@@ -51,7 +51,7 @@ network:
 
 train:
   batch_size: 100
-  validation_set_percent: 0.44
+  validation_set_percent: 0.2
   augment:
     threshold: 0.6
     choose_adjustment_angle: 0.25
@@ -65,5 +65,5 @@ train:
       bottom_offset: 25
 
 simulator:
-    speed: 30
-    k_p: 0.35
+    speed: 20
+    k_p: 0.45

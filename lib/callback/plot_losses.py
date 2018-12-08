@@ -8,20 +8,24 @@ class PlotLosses(keras.callbacks.Callback):
             self,
             validation_generator,
             plot_interval=2,
-            evaluate_interval=10
+            evaluate_interval=10,
+            metric=None
     ):
         super().__init__()
         self.plot_interval = plot_interval
         self.evaluate_interval = evaluate_interval
         self.validation_generator = validation_generator
+        self.metric = metric
         self.i = 0
-        self.val_batch_count = len(self.validation_generator)
         self.val_bach_index = 0
         self.x = []
-        self.losses = []
-        self.val_losses = []
-        self.acc = []
-        self.val_acc = []
+
+        self.loss_values = []
+        self.val_loss_values = []
+
+        self.metric_values = []
+        self.val_metric_values = []
+
         self.logs = []
 
     def on_train_begin(self, logs={}):
@@ -31,22 +35,29 @@ class PlotLosses(keras.callbacks.Callback):
         if self.evaluate_interval is None:
             self.logs.append(logs)
             self.x.append(self.i)
-            self.losses.append(logs.get('loss'))
-            self.val_losses.append(logs.get('val_loss'))
-            self.acc.append(logs.get('acc'))
-            self.val_acc.append(logs.get('val_acc'))
+
+            self.loss_values.append(logs.get('loss'))
+            self.val_loss_values.append(logs.get('val_loss'))
+
+            if self.metric is not None:
+                self.metric_values.append(logs.get(self.metric))
+                self.val_metric_values.append(logs.get(f'val_{self.metric}'))
+
             self.i += 1
 
         if epoch % self.plot_interval == 0:
             clear_output(wait=True)
             f, (ax1, ax2) = plt.subplots(1, 2, sharex=True, figsize=(20, 5))
-            ax1.plot(self.x, self.losses, label="loss")
-            ax1.plot(self.x, self.val_losses, label="val_loss")
+
+            ax1.plot(self.x, self.loss_values, label="loss")
+            ax1.plot(self.x, self.val_loss_values, label="val_loss")
             ax1.legend()
 
-            ax2.plot(self.x, self.acc, label="acc")
-            ax2.plot(self.x, self.val_acc, label="val_acc")
-            ax2.legend()
+            if self.metric is not None:
+                ax2.plot(self.x, self.metric_values, label=self.metric)
+                ax2.plot(self.x, self.val_metric_values, label=f'val_{self.metric}')
+                ax2.legend()
+
             plt.show()
 
     def on_batch_end(self, batch, logs={}):
@@ -54,23 +65,30 @@ class PlotLosses(keras.callbacks.Callback):
             self.i += 1
             self.logs.append(logs)
             self.x.append(self.i)
-            self.losses.append(logs.get('loss'))
-            self.acc.append(logs.get('acc'))
+            self.loss_values.append(logs.get('loss'))
+
+            if self.metric is not None:
+                self.metric_values.append(logs.get(self.metric))
 
             if self.validation_generator is not None:
                 val_batch = self.validation_generator[self.val_bach_index]
                 score = self.model.evaluate(val_batch[0], val_batch[1], verbose=0)
-                self.val_losses.append(score[0])
-                self.val_acc.append(score[1])
-                print(f' - val_loss: {score[0]:.4f} - val_acc: {score[1]:.4f}')
 
-        self.increment_batch_index()
+                self.val_loss_values.append(score[0])
 
-    def increment_batch_index(self):
-        if self.val_bach_index == self.val_batch_count:
-            self.val_bach_index = 0
-        else:
+                if self.metric is not None:
+                    self.val_metric_values.append(score[1])
+
+                if self.metric is not None:
+                    print(f' - val_loss: {score[0]:.4f} - val_{self.metric}: {score[1]:.4f}')
+                else:
+                    print(f' - val_loss: {score[0]:.4f}')
+
+        if self.val_bach_index < len(self.validation_generator):
             self.val_bach_index += 1
+        else:
+            self.val_bach_index = 0
+
 
 
 

@@ -30,10 +30,8 @@ class CheckpointFactory:
     def checkpoint_filename(model_name):
         filename = f'{model_name.lower()}_mode_weights--'
         filename += 'epoch_{epoch:03d}--'
-        filename += 'val_loss_{val_loss:.4f}--'
-        filename += 'val_acc_{val_acc:.4f}--'
-        filename += 'val_loss_{loss:.4f}--'
-        filename += 'val_acc_{acc:.4f}'
+        filename += 'val_rmse_{val_rmse:.4f}--'
+        filename += 'rmse_{rmse:.4f}'
         return filename
 
 
@@ -42,6 +40,7 @@ class PlotLossesFactory:
     def create(
             validation_generator,
             plot_interval=1,
-            evaluate_interval=10
+            evaluate_interval=10,
+            metric=None
     ):
-        return PlotLosses(validation_generator, plot_interval, evaluate_interval)
+        return PlotLosses(validation_generator, plot_interval, evaluate_interval, metric)
