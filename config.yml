@@ -17,14 +17,18 @@ dataset:
       - datasets/dataset_8/driving_log.csv
       #  Normal driving (6 laps)...
       - datasets/dataset_9/driving_log.csv
+      #  Test dataset normal driving (3 laps)...
+      - datasets/dataset_10/driving_log.csv
       #  Normal reserve driving (5 laps)...
       - datasets/dataset_11/driving_log.csv
        #  Normal reserve driving (10 laps)...
       - datasets/dataset_12/driving_log.csv
       - datasets/dataset_13/driving_log.csv
       - datasets/dataset_14/driving_log.csv
-      #  Test dataset normal driving (3 laps)...
-      - datasets/dataset_10/driving_log.csv
+      - datasets/dataset_15/driving_log.csv
+      - datasets/dataset_16/driving_log.csv
+      - datasets/dataset_17/driving_log.csv
+      - datasets/dataset_18/driving_log.csv
   columns:
     - center
     - left
@@ -51,7 +55,7 @@ network:
 
 train:
   batch_size: 100
-  validation_set_percent: 0.2
+  validation_set_percent: 0.30
   augment:
     threshold: 0.6
     choose_adjustment_angle: 0.25

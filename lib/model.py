@@ -41,3 +41,5 @@ class Model:
         return self.model.evaluate(features, labels, verbose=0)
 
     def load_weights(self, path='model.h5'): self.model.load_weights(path)
+
+    def predict(self, x, batch_size=1): return self.model.predict(x, batch_size=batch_size)

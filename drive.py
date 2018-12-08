@@ -7,8 +7,12 @@ from PIL import Image
 from flask import Flask
 from io import BytesIO
 from keras.models import load_model
+from keras.optimizers import Adam
+
 from lib.image_preprocessor import ImagePreprocessor
 from lib.config import Config
+from lib.metrics import rmse
+from lib.model_factory import ModelFactory
 
 cfg = Config('./config.yml')
     
@@ -92,8 +96,9 @@ if __name__ == '__main__':
         help='Path to model h5 file. Model should be on the same path.'
     )
 
+    model = ModelFactory.create_nvidia_model(metrics=[rmse])
     args = parser.parse_args()
-    model = load_model(args.model)
+    model.load_weights(args.model)
 
     image_preprocessor = ImagePreprocessor(
         top_offset=cfg['train']['preprocess']['crop']['top_offset'],
