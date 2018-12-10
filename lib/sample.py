@@ -3,22 +3,26 @@ from lib.plot_utils import grid_display
 
 
 class Sample:
-    def __init__(self, features, labels):
+    def __init__(self, features, feature_columns, labels, labels_columns):
         self.features = features
         self.labels = labels
+        self.feature_columns = feature_columns
+        self.labels_columns = labels_columns
 
     def show(self):
         left, center, right = self.images()
 
-        print("\n\n\nImages")
+        print("\n\n\nFeatures")
         grid_display(
             images=[left, center, right],
             titles=[f'Left Camera {left.shape}', f'Center Camera {center.shape}', f'Right Camera {left.shape}'],
             columns=3,
             figure_size=(40, 40),
-            font_size=32
+            font_size=24
         )
-        print(f'Steering Angle: {self.labels[0]}\n\n')
+        print("Labels")
+        for index, label in enumerate(zip(self.labels_columns, self.labels)):
+            print(f'\t- {label[0].capitalize()}: {label[1]}')
 
     def center_image_path(self): return self.features[0]
 

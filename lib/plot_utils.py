@@ -29,7 +29,7 @@ def histogram(
         y_label= "Number of occurrences",
         title='Title'
 ):
-    sns.set(rc={'figure.figsize': (22, 5)})
+    sns.set(rc={'figure.figsize': (8, 5)})
 
     b = sns.distplot(data, hist=True, kde=False)
 
@@ -38,6 +38,22 @@ def histogram(
     b.set_ylabel(y_label, fontsize=15)
 
     plt.show()
+
+
+def histograms(
+        values,
+        x_labels,
+        titles,
+        y_label="Number of occurrences",
+        size=(20, 5)
+):
+    f, axes = plt.subplots(1, len(values), figsize=size, sharex=False)
+
+    for index, value in enumerate(values):
+        b = sns.distplot(value, ax=axes[index], hist=True, kde=False)
+        b.axes.set_title(f'{titles[index]} (Samples: {len(value)})', fontsize=15)
+        b.set_xlabel(x_labels[index], fontsize=15)
+        b.set_ylabel(y_label, fontsize=15)
 
 
 def graph_model(model):

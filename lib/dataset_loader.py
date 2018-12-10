@@ -20,4 +20,9 @@ class DatasetLoader:
 
         data_frame = pd.concat(data_frames)
 
-        return Dataset(data_frame[features].values, data_frame[labels].values)
+        return Dataset(
+            data_frame[features].values,
+            features,
+            data_frame[labels].values,
+            labels
+        )
