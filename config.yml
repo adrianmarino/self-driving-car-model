@@ -67,7 +67,7 @@ train:
     crop:
       top_offset: 55
       bottom_offset: 25
-
-simulator:
-    speed: 20
-    k_p: 0.45
+pi_controller:
+    set_point: 18
+    k_p: 0.1
+    k_i: 0.0006
