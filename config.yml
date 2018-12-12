@@ -45,11 +45,13 @@ dataset:
     - steering
     - speed
     - throttle
+ 
 network:
     input_shape:
       height: 66
       width: 200
       channels: 3
+
 train:
   batch_size: 100
   validation_set_percent: 0.30
@@ -64,6 +66,7 @@ train:
     crop:
       top_offset: 55
       bottom_offset: 25
+
 simulator:
     speed: 20
     k_p: 0.45

@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+from lib.plot_utils import histograms
 from lib.sample import Sample
 
 
@@ -63,3 +64,10 @@ class Dataset:
             raise StopIteration
 
     def label_column(self, index): return self.labels[:, index]
+
+    def show_stats(self):
+        histograms(
+            values=[self.label_column(index) for index in range(len(self.label_columns))],
+            x_labels=[col.capitalize() for col in self.label_columns],
+            titles=[f'Range: ({self.label_column(i).min():0.4f} , {self.label_column(i).max():0.4f})' for i in range(len(self.label_columns))]
+        )

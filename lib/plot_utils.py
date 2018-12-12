@@ -33,7 +33,7 @@ def histogram(
 
     b = sns.distplot(data, hist=True, kde=False)
 
-    b.axes.set_title(f'{title} (Samples: {len(data)})', fontsize=15)
+    b.axes.set_title(f'{title} (Size: {len(data)})', fontsize=15)
     b.set_xlabel(x_label, fontsize=15)
     b.set_ylabel(y_label, fontsize=15)
 
@@ -51,7 +51,7 @@ def histograms(
 
     for index, value in enumerate(values):
         b = sns.distplot(value, ax=axes[index], hist=True, kde=False)
-        b.axes.set_title(f'{titles[index]} (Samples: {len(value)})', fontsize=15)
+        b.axes.set_title(f'{titles[index]} - Size: {len(value)}', fontsize=15)
         b.set_xlabel(x_labels[index], fontsize=15)
         b.set_ylabel(y_label, fontsize=15)
 
@@ -62,7 +62,7 @@ def graph_model(model):
     display(SVG(image))
 
 
-def show_image(image, size=(17, 17)):
+def show_image(image, size=(10, 5)):
     grid_display(
         images=[image],
         titles=[],

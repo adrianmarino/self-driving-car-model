@@ -29,33 +29,45 @@ k_p = float(cfg['simulator']['k_p'])
 target_speed = float(cfg['simulator']['speed'])
 
 
+class SimplePIController:
+    def __init__(self, Kp, Ki):
+        self.Kp = Kp
+        self.Ki = Ki
+        self.set_point = 0.
+        self.error = 0.
+        self.integral = 0.
+
+    def set_desired(self, desired):
+        self.set_point = desired
+
+    def update(self, measurement):
+        # proportional error
+        self.error = self.set_point - measurement
+
+        # integral error
+        self.integral += self.error
+
+        return self.Kp * self.error + self.Ki * self.integral
+
+
+controller = SimplePIController(0.1, 0.002)
+set_speed = 20
+controller.set_desired(set_speed)
+
+
 # registering event handler for the server
 @sio.on('telemetry')
 def telemetry(sid, data):
     if data:
         try:
-            next_steering_angle = float(model.predict(
-                current_camera_image(data),
-                batch_size=1
-            ))
-            throttle = next_throttle_value(get_speed(data))
-
-            print(f'Angle: {next_steering_angle}, Throttle: {throttle}')
-            send_control(next_steering_angle, throttle)
+            steering_angle = float(model.predict(current_camera_image(data), batch_size=1))
+            throttle = controller.update(get_speed(data))
+            print(f'Angle: {steering_angle}, Throttle: {throttle}')
+            send_control(steering_angle, throttle)
         except Exception as e:
             print(f'ERROR: {e}')
     else:
         sio.emit('manual', data={}, skip_sid=True)
-
-
-def next_throttle_value(current_speed):
-    # The driving model currently just outputs a constant throttle. Feel free to edit this.
-    # A proportional controller to ease up on the speed and angles
-    # https://en.wikipedia.orgss/wiki/Proportional_control
-    # k_p = Proportional gain
-    error = target_speed - current_speed
-    throttle = k_p * error
-    return throttle
 
 
 def get_speed(data): return float(data["speed"])
@@ -83,10 +95,12 @@ def connect(sid, environ):
 def send_control(steering_angle, throttle):
     sio.emit(
         "steer",
-        data={'steering_angle': steering_angle.__str__(), 'throttle': throttle.__str__()},
+        data={
+            'steering_angle': steering_angle.__str__(),
+            'throttle': throttle.__str__()
+        },
         skip_sid=True
     )
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')

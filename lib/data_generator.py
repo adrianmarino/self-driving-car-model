@@ -27,17 +27,17 @@ class SteeringWheelAngleDataGenerator(Sequence):
         self.on_epoch_end()
 
     def __getitem__(self, index):
-        images = np.empty((self.batch_size, *self.input_shape))
-        steers = np.empty((self.batch_size, *self.output_shape))
+        features = np.empty((self.batch_size, *self.input_shape))
+        labels = np.empty((self.batch_size, *self.output_shape))
         samples_batch = self.dataset.subset(index, size=self.batch_size)
 
         index = 0
         for sample in samples_batch:
-            image, steers[index] = self.sample_augmenter.augment(sample)
-            images[index] = self.image_preprocessor.process(image)
+            image, labels[index][0], labels[index][1], labels[index][2] = self.sample_augmenter.augment(sample)
+            features[index] = self.image_preprocessor.process(image)
             index += 1
 
-        return images, steers
+        return features, labels
 
     def __len__(self): return int(np.floor(len(self.dataset) / self.batch_size))
 
@@ -46,7 +46,7 @@ class SteeringWheelAngleDataGenerator(Sequence):
             self.dataset = self.dataset.shuffle()
 
     def any_batch(self):
-        images, steers = self[self.random_index()]
-        return Dataset(images, steers)
+        features, labels = self[self.random_index()]
+        return Dataset(features, ['image'], labels, self.dataset.label_columns)
 
     def random_index(self): return random.randint(0, len(self) - 1)

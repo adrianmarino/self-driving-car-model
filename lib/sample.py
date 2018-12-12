@@ -10,19 +10,25 @@ class Sample:
         self.labels_columns = labels_columns
 
     def show(self):
-        left, center, right = self.images()
+        self.show_features()
+        self.show_labels()
 
-        print("\n\n\nFeatures")
-        grid_display(
-            images=[left, center, right],
-            titles=[f'Left Camera {left.shape}', f'Center Camera {center.shape}', f'Right Camera {left.shape}'],
-            columns=3,
-            figure_size=(40, 40),
-            font_size=24
-        )
+    def show_labels(self):
         print("Labels")
         for index, label in enumerate(zip(self.labels_columns, self.labels)):
             print(f'\t- {label[0].capitalize()}: {label[1]}')
+
+    def show_features(self):
+        print("\n\n\nFeatures")
+        images = self.images()
+        titles = [f'{label} Camera {images[0].shape}' for label in self.feature_columns]
+        grid_display(
+            images=images,
+            titles=titles,
+            columns=len(titles),
+            figure_size=(40, 40),
+            font_size=22
+        )
 
     def center_image_path(self): return self.features[0]
 
@@ -41,3 +47,7 @@ class Sample:
     def right_image(self): return load_image(self.right_image_path())
 
     def steering_angle(self): return self.labels[0]
+
+    def speed(self): return self.labels[1]
+
+    def throttle(self): return self.labels[2]

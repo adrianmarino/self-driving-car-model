@@ -48,7 +48,7 @@ class ModelFactory:
         model.add(Dense(10, activation=activation))
         model.add(BatchNormalization())
 
-        model.add(Dense(units=3))
+        model.add(Dense(units=1))
 
         model.compile(loss=loss, optimizer=optimizer, metrics=metrics)
 
