@@ -1,58 +1,24 @@
 import argparse
 import base64
+from io import BytesIO
+
+import eventlet.wsgi
 import numpy as np
 import socketio
-import eventlet.wsgi
 from PIL import Image
 from flask import Flask
-from io import BytesIO
-from keras.models import load_model
-from keras.optimizers import Adam
 
-from lib.image_preprocessor import ImagePreprocessor
 from lib.config import Config
-from lib.metrics import rmse
-from lib.model_factory import ModelFactory
+from lib.image_preprocessor import ImagePreprocessor
+from lib.model.metrics import rmse
+from lib.model.model_factory import ModelFactory
 
-cfg = Config('./config.yml')
-    
-# initialize our server
 sio = socketio.Server()
-
-# our flask (web) app
 app = Flask(__name__)
 
+config = Config('./config.yml')
 model = None
-prev_image_array = None
-
-k_p = float(cfg['simulator']['k_p'])
-target_speed = float(cfg['simulator']['speed'])
-
-
-class SimplePIController:
-    def __init__(self, Kp, Ki):
-        self.Kp = Kp
-        self.Ki = Ki
-        self.set_point = 0.
-        self.error = 0.
-        self.integral = 0.
-
-    def set_desired(self, desired):
-        self.set_point = desired
-
-    def update(self, measurement):
-        # proportional error
-        self.error = self.set_point - measurement
-
-        # integral error
-        self.integral += self.error
-
-        return self.Kp * self.error + self.Ki * self.integral
-
-
-controller = SimplePIController(0.1, 0.002)
-set_speed = 20
-controller.set_desired(set_speed)
+image_preprocessor = ImagePreprocessor.create_from(config)
 
 
 # registering event handler for the server
@@ -60,47 +26,54 @@ controller.set_desired(set_speed)
 def telemetry(sid, data):
     if data:
         try:
-            steering_angle = float(model.predict(current_camera_image(data), batch_size=1))
-            throttle = controller.update(get_speed(data))
-            print(f'Angle: {steering_angle}, Throttle: {throttle}')
-            send_control(steering_angle, throttle)
+            steering_angle, throttle, reverse = predict(current_camera_frame(data))
+            print(f'<< Steering Angle: {steering_angle:0.6f} | Throttle: {throttle:0.6f} | Reverse: {reverse:0.6f} >>')
+            send_control(steering_angle, throttle*0.8, reverse)
         except Exception as e:
             print(f'ERROR: {e}')
     else:
         sio.emit('manual', data={}, skip_sid=True)
 
 
-def get_speed(data): return float(data["speed"])
+def predict(image):
+    results = model.predict(image, batch_size=1)
+    print(results)
+    return float(results[0]), float(results[1]), float(results[2])
 
 
-def current_camera_image(data):
+def current_speed(data): return float(data["speed"])
+
+
+def current_camera_frame(data):
     image = Image.open(BytesIO(base64.b64decode(data["image"])))
     return pre_process_image(image)
 
 
-def pre_process_image(image):
+def pre_process_image(frame):
     # from PIL image to numpy array
-    image = np.asarray(image)
-    image = image_preprocessor.process(image)  # apply the preprocessing
+    frame = np.asarray(frame)
+    frame = image_preprocessor.process(frame)
     # the model expects 4D array
-    return np.array([image])
+    return np.array([frame])
 
 
 @sio.on('connect')
 def connect(sid, environ):
     print("connect ", sid)
-    send_control(0, 0)
+    send_control(0, 0, 0)
 
 
-def send_control(steering_angle, throttle):
+def send_control(steering_angle, throttle, reverse):
     sio.emit(
-        "steer",
+        'steer',
         data={
             'steering_angle': steering_angle.__str__(),
-            'throttle': throttle.__str__()
+            'throttle': throttle.__str__(),
+            'reverse': reverse.__str__()
         },
         skip_sid=True
     )
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')
@@ -113,16 +86,6 @@ if __name__ == '__main__':
     model = ModelFactory.create_nvidia_model(metrics=[rmse])
     args = parser.parse_args()
     model.load_weights(args.model)
-
-    image_preprocessor = ImagePreprocessor(
-        top_offset=cfg['train']['preprocess']['crop']['top_offset'],
-        bottom_offset=cfg['train']['preprocess']['crop']['bottom_offset'],
-        input_shape=(
-            cfg['network']['input_shape']['height'],
-            cfg['network']['input_shape']['width'],
-            cfg['network']['input_shape']['channels']
-        )
-    )
 
     # wrap Flask application with engineio's middleware
     app = socketio.Middleware(sio, app)

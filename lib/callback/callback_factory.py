@@ -28,10 +28,11 @@ class CheckpointFactory:
 
     @staticmethod
     def checkpoint_filename(model_name):
-        filename = f'{model_name.lower()}_mode_weights--'
-        filename += 'epoch_{epoch:03d}--'
-        filename += 'val_rmse_{val_rmse:.4f}--'
-        filename += 'rmse_{rmse:.4f}'
+        filename = f'{model_name.lower()}_mode_weights-'
+        filename += 'epoch_{epoch:03d}-'
+        filename += 'steer_rmse_{val_steering_angle_rmse:.4f}-'
+        filename += 'throttle_rmse_{val_throttle_rmse:.4f}-'
+        filename += 'reverse_rmse_{val_reverse_rmse:.4f}-'
         return filename
 
 
@@ -40,7 +41,6 @@ class PlotLossesFactory:
     def create(
             validation_generator,
             plot_interval=1,
-            evaluate_interval=10,
-            metric=None
+            evaluate_interval=10
     ):
-        return PlotLosses(validation_generator, plot_interval, evaluate_interval, metric)
+        return PlotLosses(validation_generator, plot_interval, evaluate_interval)

@@ -29,6 +29,9 @@ dataset:
       - datasets/dataset_16/driving_log.csv
       - datasets/dataset_17/driving_log.csv
       - datasets/dataset_18/driving_log.csv
+    test:
+      - datasets/dataset_0/driving_log.csv
+      - datasets/dataset_1/driving_log.csv
   columns:
     - center
     - left
@@ -43,8 +46,8 @@ dataset:
     - right
   labels:
     - steering
-    - speed
     - throttle
+    - reverse
  
 network:
     input_shape:
@@ -66,7 +69,3 @@ train:
     crop:
       top_offset: 55
       bottom_offset: 25
-
-simulator:
-    speed: 20
-    k_p: 0.45

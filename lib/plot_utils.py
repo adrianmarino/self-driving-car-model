@@ -92,3 +92,10 @@ def grid_display(
         if len(titles) >= len(images):
             plt.title(titles[i], {'fontsize': font_size})
     plt.show()
+
+
+def show_values(labels, values):
+    print()
+    for label, value in zip(labels, values):
+        print(f'- {label}: {value}')
+    print()

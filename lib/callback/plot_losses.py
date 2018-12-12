@@ -8,86 +8,62 @@ class PlotLosses(keras.callbacks.Callback):
             self,
             validation_generator,
             plot_interval=2,
-            evaluate_interval=10,
-            metric=None
+            evaluate_interval=10
     ):
         super().__init__()
         self.plot_interval = plot_interval
         self.evaluate_interval = evaluate_interval
         self.validation_generator = validation_generator
-        self.metric = metric
         self.i = 0
         self.val_bach_index = 0
         self.x = []
-
-        self.loss_values = []
-        self.val_loss_values = []
-
-        self.metric_values = []
-        self.val_metric_values = []
-
         self.logs = []
+        self.metrics_values = {}
+        self.val_metrics_values = {}
 
     def on_train_begin(self, logs={}):
-        print('Begin training')
+        for metric in self.model.metrics_names:
+            self.metrics_values[metric] = []
+            self.val_metrics_values[metric] = []
 
     def on_epoch_end(self, epoch, logs={}):
-        if self.evaluate_interval is None:
-            self.logs.append(logs)
-            self.x.append(self.i)
-
-            self.loss_values.append(logs.get('loss'))
-            self.val_loss_values.append(logs.get('val_loss'))
-
-            if self.metric is not None:
-                self.metric_values.append(logs.get(self.metric))
-                self.val_metric_values.append(logs.get(f'val_{self.metric}'))
-
-            self.i += 1
-
         if epoch % self.plot_interval == 0:
             clear_output(wait=True)
-            f, (ax1, ax2) = plt.subplots(1, 2, sharex=True, figsize=(20, 5))
+            f, axes = plt.subplots(1, len(self.model.metrics_names), sharex=True, figsize=(40, 8))
 
-            ax1.plot(self.x, self.loss_values, label="loss")
-            ax1.plot(self.x, self.val_loss_values, label="val_loss")
-            ax1.legend()
-
-            if self.metric is not None:
-                ax2.plot(self.x, self.metric_values, label=self.metric)
-                ax2.plot(self.x, self.val_metric_values, label=f'val_{self.metric}')
-                ax2.legend()
+            index = 0
+            for metric in self.model.metrics_names:
+                axes[index].plot(self.x, self.metrics_values[metric], label=metric)
+                axes[index].plot(self.x, self.val_metrics_values[metric], label=f'val_{metric}')
+                axes[index].legend()
+                index += 1
 
             plt.show()
 
     def on_batch_end(self, batch, logs={}):
-        if self.evaluate_interval is not None and batch % self.evaluate_interval == 0:
+        if batch % self.evaluate_interval == 0:
             self.i += 1
             self.logs.append(logs)
             self.x.append(self.i)
-            self.loss_values.append(logs.get('loss'))
 
-            if self.metric is not None:
-                self.metric_values.append(logs.get(self.metric))
+            val_features, val_labels = self.validation_generator[self.val_bach_index]
+            score = self.model.evaluate(val_features, val_labels)
 
-            if self.validation_generator is not None:
-                val_batch = self.validation_generator[self.val_bach_index]
-                score = self.model.evaluate(val_batch[0], val_batch[1], verbose=0)
-
-                self.val_loss_values.append(score[0])
-
-                if self.metric is not None:
-                    self.val_metric_values.append(score[1])
-
-                if self.metric is not None:
-                    print(f' - val_loss: {score[0]:.4f} - val_{self.metric}: {score[1]:.4f}')
-                else:
-                    print(f' - val_loss: {score[0]:.4f}')
+            index = 0
+            output = []
+            for metric in self.model.metrics_names:
+                self.metrics_values[metric].append(logs.get(metric))
+                self.val_metrics_values[metric].append(score[index])
+                output.append(f'val_{metric}: {score[index]:.4f}')
+                index += 1
+            print(" - ".join(output) + "\n")
 
         if self.val_bach_index < len(self.validation_generator):
             self.val_bach_index += 1
         else:
             self.val_bach_index = 0
+
+
 
 
 
