@@ -7,8 +7,8 @@ class PlotLosses(keras.callbacks.Callback):
     def __init__(
             self,
             validation_generator,
-            plot_interval=2,
-            evaluate_interval=10
+            plot_interval=20,
+            evaluate_interval=15
     ):
         super().__init__()
         self.plot_interval = plot_interval
@@ -25,20 +25,6 @@ class PlotLosses(keras.callbacks.Callback):
         for metric in self.model.metrics_names:
             self.metrics_values[metric] = []
             self.val_metrics_values[metric] = []
-
-    def on_epoch_end(self, epoch, logs={}):
-        if epoch % self.plot_interval == 0:
-            clear_output(wait=True)
-            f, axes = plt.subplots(1, len(self.model.metrics_names), sharex=True, figsize=(40, 8))
-
-            index = 0
-            for metric in self.model.metrics_names:
-                axes[index].plot(self.x, self.metrics_values[metric], label=metric)
-                axes[index].plot(self.x, self.val_metrics_values[metric], label=f'val_{metric}')
-                axes[index].legend()
-                index += 1
-
-            plt.show()
 
     def on_batch_end(self, batch, logs={}):
         if batch % self.evaluate_interval == 0:
@@ -62,6 +48,20 @@ class PlotLosses(keras.callbacks.Callback):
             self.val_bach_index += 1
         else:
             self.val_bach_index = 0
+
+        if batch % self.plot_interval == 0:
+            f, axes = plt.subplots(1, len(self.model.metrics_names), sharex=True, figsize=(40, 8))
+
+            index = 0
+            for metric in self.model.metrics_names:
+                axes[index].plot(self.x, self.metrics_values[metric], label=metric)
+                axes[index].plot(self.x, self.val_metrics_values[metric], label=f'val_{metric}')
+                axes[index].legend()
+                index += 1
+
+            plt.show()
+            clear_output(wait=True)
+
 
 
 

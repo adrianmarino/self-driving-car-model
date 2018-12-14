@@ -37,7 +37,7 @@ class SteeringWheelAngleDataGenerator(Sequence):
             index += 1
 
         labels = labels.transpose()
-        labels = [labels[0], labels[1], labels[2]]
+        labels = [labels[0], labels[1]]
         return features, labels
 
     def __len__(self): return int(np.floor(len(self.dataset) / self.batch_size))

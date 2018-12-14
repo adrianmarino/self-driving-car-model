@@ -22,7 +22,7 @@ class NullSampleAugmenter(SampleAugmenter):
     def augment(self, sample):
         return DataSample(
             self.image_processor.process(sample.center_image()),
-            [sample.steering_angle(), sample.throttle(), sample.reverse()]
+            [sample.steering_angle(), sample.throttle()]
         )
 
 
@@ -51,7 +51,7 @@ class SampleAugmenter(NullSampleAugmenter):
 
         return DataSample(
             self.image_processor.process(image),
-            [steering_angle, sample.throttle(), sample.reverse()]
+            [steering_angle, sample.throttle()]
         )
 
     def __augment_image_and_steering_angle(self, sample):

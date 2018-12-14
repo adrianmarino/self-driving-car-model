@@ -47,7 +47,6 @@ dataset:
   labels:
     - steering
     - throttle
-    - reverse
  
 network:
     input_shape:

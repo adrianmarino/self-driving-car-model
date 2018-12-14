@@ -31,8 +31,7 @@ class CheckpointFactory:
         filename = f'{model_name.lower()}_mode_weights-'
         filename += 'epoch_{epoch:03d}-'
         filename += 'steer_rmse_{val_steering_angle_rmse:.4f}-'
-        filename += 'throttle_rmse_{val_throttle_rmse:.4f}-'
-        filename += 'reverse_rmse_{val_reverse_rmse:.4f}-'
+        filename += 'throttle_rmse_{val_throttle_rmse:.4f}'
         return filename
 
 

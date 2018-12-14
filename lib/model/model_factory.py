@@ -12,7 +12,7 @@ class ModelFactory:
             activation='relu',
             loss='mean_squared_error',
             metrics=[],
-            optimizer=Adam(lr=0.001)
+            optimizer=Adam(lr=0.0001)
     ):
         inputs = Input(shape=input_shape)
 
@@ -53,13 +53,11 @@ class ModelFactory:
 
         throttle_output = Dense(units=1, name='throttle')(net)
 
-        reverse_output = Dense(units=1, name='reverse')(net)
-
-        model = Model(inputs=inputs, outputs=[steering_angle_output, throttle_output, reverse_output])
+        model = Model(inputs=inputs, outputs=[steering_angle_output, throttle_output])
 
         model.compile(
             loss=loss,
-            loss_weights=[0.7, 0.25, 0.25],
+            loss_weights=[0.7, 0.3],
             optimizer=optimizer,
             metrics=metrics
         )

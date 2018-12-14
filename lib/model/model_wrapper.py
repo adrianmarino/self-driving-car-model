@@ -43,7 +43,7 @@ class ModelWrapper:
     def predict(self, x, batch_size=1, verbose=0):
         result = self.model.predict(x, batch_size=batch_size)
         if verbose:
-            show_values(['steering_angle', 'throttle', 'reverse'], result)
+            show_values(self.metrics_names(), result)
         return result
 
     def metrics_names(self):

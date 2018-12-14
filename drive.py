@@ -26,9 +26,9 @@ image_preprocessor = ImagePreprocessor.create_from(config)
 def telemetry(sid, data):
     if data:
         try:
-            steering_angle, throttle, reverse = predict(current_camera_frame(data))
-            print(f'<< Steering Angle: {steering_angle:0.6f} | Throttle: {throttle:0.6f} | Reverse: {reverse:0.6f} >>')
-            send_control(steering_angle, throttle*0.8, reverse)
+            steering_angle, throttle = predict(current_camera_frame(data))
+            print(f'<< Steering Angle: {steering_angle:0.6f} | Throttle: {throttle:0.6f} >>')
+            send_control(steering_angle, throttle)
         except Exception as e:
             print(f'ERROR: {e}')
     else:
@@ -37,8 +37,7 @@ def telemetry(sid, data):
 
 def predict(image):
     results = model.predict(image, batch_size=1)
-    print(results)
-    return float(results[0]), float(results[1]), float(results[2])
+    return float(results[0]), float(results[1])
 
 
 def current_speed(data): return float(data["speed"])
@@ -60,17 +59,13 @@ def pre_process_image(frame):
 @sio.on('connect')
 def connect(sid, environ):
     print("connect ", sid)
-    send_control(0, 0, 0)
+    send_control(0, 0)
 
-
-def send_control(steering_angle, throttle, reverse):
+    
+def send_control(steering_angle, throttle):
     sio.emit(
         'steer',
-        data={
-            'steering_angle': steering_angle.__str__(),
-            'throttle': throttle.__str__(),
-            'reverse': reverse.__str__()
-        },
+        data={'steering_angle': steering_angle.__str__(), 'throttle': throttle.__str__()},
         skip_sid=True
     )
 
@@ -78,14 +73,13 @@ def send_control(steering_angle, throttle, reverse):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Remote Driving')
     parser.add_argument(
-        'model',
+        'weights',
         type=str,
         help='Path to model h5 file. Model should be on the same path.'
     )
 
     model = ModelFactory.create_nvidia_model(metrics=[rmse])
-    args = parser.parse_args()
-    model.load_weights(args.model)
+    model.load_weights(parser.parse_args().weights)
 
     # wrap Flask application with engineio's middleware
     app = socketio.Middleware(sio, app)
