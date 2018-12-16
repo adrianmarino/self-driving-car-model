@@ -20,9 +20,12 @@ class NullSampleAugmenter(SampleAugmenter):
     def __init__(self, image_processor): super().__init__(image_processor)
 
     def augment(self, sample):
+        image_path = sample.feature_image('center')
+        image = self.image_processor.process(image_path)
+
         return DataSample(
-            self.image_processor.process(sample.center_image()),
-            [sample.steering_angle(), sample.throttle()]
+            features=[image, sample.feature('speed')],
+            labels=[sample.label('steering'), sample.label('throttle')]
         )
 
 
@@ -34,7 +37,10 @@ class SampleAugmenter(NullSampleAugmenter):
             translate_range_x=100,
             translate_range_y=10,
             choose_image_adjustment_angle=0.2,
-            image_translate_angle_delta=0.002
+            image_translate_angle_delta=0.002,
+            steer_threshold=0.5,
+            speed_threshold=20,
+            throttle_delta=0.3
     ):
         super().__init__(image_processor)
         self.augment_threshold = augment_threshold
@@ -42,6 +48,9 @@ class SampleAugmenter(NullSampleAugmenter):
         self.translate_range_y = translate_range_y
         self.choose_image_adjustment_angle = choose_image_adjustment_angle
         self.image_translate_angle_delta = image_translate_angle_delta
+        self.steer_threshold = steer_threshold
+        self.speed_threshold = speed_threshold
+        self.throttle_delta = throttle_delta
 
     def augment(self, sample):
         if np.random.rand() > self.augment_threshold:
@@ -49,17 +58,24 @@ class SampleAugmenter(NullSampleAugmenter):
 
         image, steering_angle = self.__augment_image_and_steering_angle(sample)
 
+        throttle = self.__throttle_augmentation(
+            sample,
+            self.steer_threshold,
+            self.speed_threshold,
+            self.throttle_delta
+        )
+
         return DataSample(
-            self.image_processor.process(image),
-            [steering_angle, sample.throttle()]
+            features=[self.image_processor.process(image), sample.feature('speed')],
+            labels=[steering_angle, throttle]
         )
 
     def __augment_image_and_steering_angle(self, sample):
         image, steering_angle = choose_image(
-            sample.center_image_path(),
-            sample.left_image_path(),
-            sample.right_image_path(),
-            sample.steering_angle(),
+            sample.feature('center'),
+            sample.feature('left'),
+            sample.feature('right'),
+            sample.label('steering'),
             self.choose_image_adjustment_angle
         )
         image, steering_angle = random_image_flip(image, steering_angle)
@@ -73,3 +89,13 @@ class SampleAugmenter(NullSampleAugmenter):
         image = random_image_shadow(image, image.shape[1], image.shape[0])
         image = random_image_brightness(image)
         return image, steering_angle
+
+    def __throttle_augmentation(self, sample, steer_threshold, speed_threshold, throttle_delta):
+        if np.random.rand() < 0.5 and \
+                abs(sample.label('steering')) > steer_threshold and \
+                sample.feature('speed') > speed_threshold:
+                    return sample.label('throttle') * throttle_delta
+
+        return sample.label('throttle')
+
+

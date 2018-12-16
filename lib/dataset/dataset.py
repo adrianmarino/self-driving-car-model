@@ -65,7 +65,7 @@ class Dataset:
 
     def label_column(self, index): return self.labels[:, index]
 
-    def show_stats(self):
+    def show_labels_stats(self):
         histograms(
             values=[self.label_column(index) for index in range(len(self.label_columns))],
             x_labels=[col.capitalize() for col in self.label_columns],

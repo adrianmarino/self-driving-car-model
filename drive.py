@@ -26,8 +26,11 @@ image_preprocessor = ImagePreprocessor.create_from(config)
 def telemetry(sid, data):
     if data:
         try:
-            steering_angle, throttle = predict(current_camera_frame(data))
-            throttle *=0.7
+            steering_angle, throttle = predict(
+                current_camera_frame(data),
+                current_speed(data)
+            )
+            throttle*=0.6
             print(f'<< Steering Angle: {steering_angle:0.6f} | Throttle: {throttle:0.6f} >>')
             send_control(steering_angle, throttle)
         except Exception as e:
@@ -36,8 +39,9 @@ def telemetry(sid, data):
         sio.emit('manual', data={}, skip_sid=True)
 
 
-def predict(image):
-    results = model.predict(image, batch_size=1)
+def predict(image, speed):
+    inputs = [image, np.array([speed])]
+    results = model.predict(inputs, batch_size=1)
     return float(results[0]), float(results[1])
 
 

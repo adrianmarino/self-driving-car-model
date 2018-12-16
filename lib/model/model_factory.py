@@ -1,4 +1,4 @@
-from keras.layers import Lambda, Conv2D, Flatten, Dense, BatchNormalization, Input, Reshape
+from keras.layers import Lambda, Conv2D, Flatten, Dense, BatchNormalization, Input, concatenate
 from keras.models import Model
 from keras.optimizers import Adam
 
@@ -8,16 +8,17 @@ from lib.model.model_wrapper import ModelWrapper
 class ModelFactory:
     @staticmethod
     def create_nvidia_model(
-            input_shape=(66, 200, 3),
             activation='relu',
             loss='mean_squared_error',
             metrics=[],
             optimizer=Adam(lr=0.0001)
     ):
-        inputs = Input(shape=input_shape)
+        # Inputs...
+        image_inputs = Input(shape=(66, 200, 3), name='image')
+        speed_input = Input(shape=(1,), name='speed')
 
         # Normalise the image - center the mean at 0
-        net = Lambda(lambda imgs: (imgs / 255.0) - 0.5)(inputs)
+        net = Lambda(lambda imgs: (imgs / 255.0) - 0.5)(image_inputs)
 
         net = Conv2D(filters=24, kernel_size=(5, 5), strides=(2, 2), activation=activation, name='conv_1')(net)
         net = BatchNormalization()(net)
@@ -35,6 +36,7 @@ class ModelFactory:
         net = BatchNormalization()(net)
 
         net = Flatten()(net)
+        net = concatenate([net, speed_input])
 
         # Fully connected layers
         net = Dense(1500, activation=activation, name='dense_1')(net)
@@ -52,11 +54,11 @@ class ModelFactory:
         net = Dense(50, activation=activation, name='dense_5')(net)
         net = BatchNormalization()(net)
 
+        # Outputs...
         steer_output = Dense(units=1, name='steer')(net)
-
         throttle_output = Dense(units=1, name='throttle')(net)
 
-        model = Model(inputs=inputs, outputs=[steer_output, throttle_output])
+        model = Model(inputs=[image_inputs, speed_input], outputs=[steer_output, throttle_output])
 
         model.compile(
             loss=loss,

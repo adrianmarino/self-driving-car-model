@@ -1,5 +1,4 @@
 from lib.image_utils import load_image
-from lib.plot_utils import grid_display
 
 
 class DatasetSample:
@@ -18,36 +17,20 @@ class DatasetSample:
         for index, label in enumerate(zip(self.labels_columns, self.labels)):
             print(f'\t- {label[0].capitalize()}: {label[1]}')
 
-    def show_features(self):
-        print("\n\n\nFeatures")
-        images = self.images()
-        titles = [f'{label} Camera {images[0].shape}' for label in self.feature_columns]
-        grid_display(
-            images=images,
-            titles=titles,
-            columns=len(titles),
-            figure_size=(40, 40),
-            font_size=22
-        )
+    def show_features(self, feature_columns=[]):
+        if len(feature_columns) == 0:
+            feature_columns = self.feature_columns
 
-    def center_image_path(self): return self.features[0]
+        print("Features")
+        for feature_name in feature_columns:
+            print(f'\t- {feature_name.capitalize()}: {self.feature(feature_name)}')
 
-    def left_image_path(self): return self.features[1]
+    def feature_image(self, name): return load_image(self.feature(name))
 
-    def right_image_path(self): return self.features[2]
+    def label(self, name):
+        index = self.labels_columns.index(name)
+        return self.labels[index]
 
-    def ordered_image_paths(self): return [self.left_image_path(), self.center_image_path(), self.right_image_path()]
-
-    def images(self): return [load_image(path) for path in self.ordered_image_paths()]
-
-    def center_image(self): return load_image(self.center_image_path())
-
-    def left_image(self): return load_image(self.left_image_path())
-
-    def right_image(self): return load_image(self.right_image_path())
-
-    def steering_angle(self): return self.labels[0]
-
-    def throttle(self): return self.labels[1]
-
-    def reverse(self): return self.labels[2]
+    def feature(self, name):
+        index = self.feature_columns.index(name)
+        return self.features[index]

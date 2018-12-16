@@ -4,7 +4,30 @@ from keras.utils.vis_utils import model_to_dot
 import seaborn as sns
 
 
-def show_sample(image, angle=None):
+def show_sample(sample):
+    show_features(sample)
+    sample.show_labels()
+
+
+def show_features(
+        sample,
+        image_features_columns=['left', 'center', 'right']
+):
+    non_image_features_columns = list(set(sample.feature_columns) - set(image_features_columns))
+    sample.show_features(non_image_features_columns)
+    print('\t- Images:')
+    images = [sample.feature_image(feature) for feature in image_features_columns]
+    titles = [f'{label.capitalize()} Camera {images[0].shape}' for label in sample.feature_columns]
+    grid_display(
+        images=images,
+        titles=titles,
+        columns=len(titles),
+        figure_size=(40, 40),
+        font_size=22
+    )
+
+
+def show_augmented_sample(image, angle=None):
     title = f'Shape: {image.shape}'
 
     if angle is not None:

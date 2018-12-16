@@ -44,25 +44,35 @@ dataset:
     - center
     - left
     - right
+    - speed
   labels:
     - steering
     - throttle
  
 network:
-    input_shape:
+    image_input_shape:
       height: 66
       width: 200
       channels: 3
+    variable_input_shape: 1
 
 train:
   batch_size: 100
-  validation_set_percent: 0.30
+  validation_set_percent: .30
   augment:
-    threshold: 0.6
-    choose_adjustment_angle: 0.25
+    threshold: .6
+    choose_adjustment_angle: .25
     translate_range_x: 100
     translate_range_y: 10
-    translate_angle_delta: 0.0035
+    translate_angle_delta: .0035
+    choose_image_adjustment_angle: .2
+    image_translate_angle_delta: .002
+    throttle:
+      steer_threshold: .5
+      speed_threshold: 20
+      throttle_delta: .3
+
+
   checkpoint_path: checkpoints
   preprocess:
     crop:

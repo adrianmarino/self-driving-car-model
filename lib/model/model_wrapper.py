@@ -40,11 +40,7 @@ class ModelWrapper:
     def load_weights(self, path='model.h5'):
         self.model.load_weights(path)
 
-    def predict(self, x, batch_size=1, verbose=0):
-        result = self.model.predict(x, batch_size=batch_size)
-        if verbose:
-            show_values(self.metrics_names(), result)
-        return result
+    def predict(self, x, batch_size=1):
+        return self.model.predict(x, batch_size=batch_size)
 
-    def metrics_names(self):
-        return self.model.metrics_names
+    def metrics_names(self): return self.model.metrics_names

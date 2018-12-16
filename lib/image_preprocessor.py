@@ -8,9 +8,9 @@ class ImagePreprocessor:
             top_offset=config['train']['preprocess']['crop']['top_offset'],
             bottom_offset=config['train']['preprocess']['crop']['bottom_offset'],
             input_shape=(
-                config['network']['input_shape']['height'],
-                config['network']['input_shape']['width'],
-                config['network']['input_shape']['channels']
+                config['network']['image_input_shape']['height'],
+                config['network']['image_input_shape']['width'],
+                config['network']['image_input_shape']['channels']
             )
         )
 
