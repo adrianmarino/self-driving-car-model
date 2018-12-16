@@ -27,6 +27,7 @@ def telemetry(sid, data):
     if data:
         try:
             steering_angle, throttle = predict(current_camera_frame(data))
+            throttle *=0.7
             print(f'<< Steering Angle: {steering_angle:0.6f} | Throttle: {throttle:0.6f} >>')
             send_control(steering_angle, throttle)
         except Exception as e:

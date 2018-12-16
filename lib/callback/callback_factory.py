@@ -10,36 +10,28 @@ class CheckpointFactory:
         create_directory(path)
         self.path = path
 
-    def create(
-            self,
-            model_name='',
-            metric='val_loss'
-    ):
+    def create(self, metric='val_loss'):
         return ModelCheckpoint(
-            self.checkpoint_file_path(model_name),
+            self.checkpoint_file_path(),
             monitor=metric,
             verbose=1,
             save_best_only=True,
             mode='auto'
         )
 
-    def checkpoint_file_path(self, model_name):
-        return os.path.join(self.path, f'{self.checkpoint_filename(model_name)}.h5')
+    def checkpoint_file_path(self):
+        return os.path.join(self.path, f'{self.checkpoint_filename()}.h5')
 
     @staticmethod
-    def checkpoint_filename(model_name):
-        filename = f'{model_name.lower()}_mode_weights-'
+    def checkpoint_filename():
+        filename = f'model_weights-'
         filename += 'epoch_{epoch:03d}-'
-        filename += 'steer_rmse_{val_steering_angle_rmse:.4f}-'
+        filename += 'steer_rmse_{val_steer_rmse:.4f}-'
         filename += 'throttle_rmse_{val_throttle_rmse:.4f}'
         return filename
 
 
 class PlotLossesFactory:
     @staticmethod
-    def create(
-            validation_generator,
-            plot_interval=1,
-            evaluate_interval=10
-    ):
+    def create(validation_generator, plot_interval=1, evaluate_interval=10):
         return PlotLosses(validation_generator, plot_interval, evaluate_interval)

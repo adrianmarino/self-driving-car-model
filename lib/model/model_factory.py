@@ -37,27 +37,30 @@ class ModelFactory:
         net = Flatten()(net)
 
         # Fully connected layers
-        net = Dense(1164, activation=activation, name='dense_1')(net)
+        net = Dense(1500, activation=activation, name='dense_1')(net)
         net = BatchNormalization()(net)
 
-        net = Dense(200, activation=activation, name='dense_2')(net)
+        net = Dense(600, activation=activation, name='dense_2')(net)
         net = BatchNormalization()(net)
 
-        net = Dense(50, activation=activation, name='dense_3')(net)
+        net = Dense(200, activation=activation, name='dense_3')(net)
         net = BatchNormalization()(net)
 
-        net = Dense(10, activation=activation, name='dense_4')(net)
+        net = Dense(100, activation=activation, name='dense_4')(net)
         net = BatchNormalization()(net)
 
-        steering_angle_output = Dense(units=1, name='steering_angle')(net)
+        net = Dense(50, activation=activation, name='dense_5')(net)
+        net = BatchNormalization()(net)
+
+        steer_output = Dense(units=1, name='steer')(net)
 
         throttle_output = Dense(units=1, name='throttle')(net)
 
-        model = Model(inputs=inputs, outputs=[steering_angle_output, throttle_output])
+        model = Model(inputs=inputs, outputs=[steer_output, throttle_output])
 
         model.compile(
             loss=loss,
-            loss_weights=[0.7, 0.3],
+            loss_weights=[1, 1],
             optimizer=optimizer,
             metrics=metrics
         )

@@ -1,15 +1,12 @@
-import keras
 import matplotlib.pyplot as plt
 from IPython.display import clear_output
+from keras.callbacks import Callback
+
+from lib.model.metrics import MetricMeterBuilder
 
 
-class PlotLosses(keras.callbacks.Callback):
-    def __init__(
-            self,
-            validation_generator,
-            plot_interval=20,
-            evaluate_interval=15
-    ):
+class PlotLosses(Callback):
+    def __init__(self, validation_generator, plot_interval=10, evaluate_interval=50):
         super().__init__()
         self.plot_interval = plot_interval
         self.evaluate_interval = evaluate_interval
@@ -27,29 +24,8 @@ class PlotLosses(keras.callbacks.Callback):
             self.val_metrics_values[metric] = []
 
     def on_batch_end(self, batch, logs={}):
-        if batch % self.evaluate_interval == 0:
-            self.i += 1
-            self.logs.append(logs)
-            self.x.append(self.i)
-
-            val_features, val_labels = self.validation_generator[self.val_bach_index]
-            score = self.model.evaluate(val_features, val_labels)
-
-            index = 0
-            output = []
-            for metric in self.model.metrics_names:
-                self.metrics_values[metric].append(logs.get(metric))
-                self.val_metrics_values[metric].append(score[index])
-                output.append(f'val_{metric}: {score[index]:.4f}')
-                index += 1
-            print(" - ".join(output) + "\n")
-
-        if self.val_bach_index < len(self.validation_generator):
-            self.val_bach_index += 1
-        else:
-            self.val_bach_index = 0
-
-        if batch % self.plot_interval == 0:
+        if batch % self.plot_interval == 0 and len(self.logs) > 1:
+            clear_output(wait=True)
             f, axes = plt.subplots(1, len(self.model.metrics_names), sharex=True, figsize=(40, 8))
 
             index = 0
@@ -60,11 +36,29 @@ class PlotLosses(keras.callbacks.Callback):
                 index += 1
 
             plt.show()
-            clear_output(wait=True)
 
+        if batch % self.evaluate_interval == 0:
+            self.i += 1
+            self.logs.append(logs)
+            self.x.append(self.i)
 
+            val_features, val_labels = self.validation_generator[self.val_bach_index]
+            score = self.model.evaluate(val_features, val_labels)
 
+            index = 0
+            output = []
+            meter_builder = MetricMeterBuilder(self.val_metrics_values)
+            for metric in self.model.metrics_names:
+                self.metrics_values[metric].append(logs.get(metric))
+                self.val_metrics_values[metric].append(score[index])
+                output.append(meter_builder.build(metric))
+                index += 1
 
+            print('Validation:')
+            for line in output:
+                print(f'  - {line}')
 
-
-
+        if self.val_bach_index < len(self.validation_generator):
+            self.val_bach_index += 1
+        else:
+            self.val_bach_index = 0

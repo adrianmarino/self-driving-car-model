@@ -1,12 +1,17 @@
 from keras.callbacks import Callback
-from keras import backend as K
+from lib.dict_utils import dist_values_append
+from lib.model.metrics import MetricMeterBuilder
+from lib.model.model_utils import learning_rate_with_decay
 
 
 class AdamLearningRateTracker(Callback):
-    def on_epoch_end(self, epoch, logs=None):
-        lr = K.eval(self.model.optimizer.lr)
-        decay = K.eval(self.model.optimizer.decay)
-        iterations = K.eval(self.model.optimizer.iterations)
+    def __init__(self, evaluate_interval=100, metric_name='learning_rate'):
+        super().__init__()
+        self.evaluate_interval = evaluate_interval
+        self.metric_name = metric_name
+        self.logs = {}
 
-        lr_with_decay = lr / (1. + decay * iterations)
-        print(f'LR: {lr_with_decay}\n')
+    def on_batch_end(self, batch, logs=None):
+        if batch % self.evaluate_interval == 0:
+            dist_values_append(self.logs, 'learning_rate', learning_rate_with_decay(self.model))
+            print(MetricMeterBuilder(self.logs).build(metric=self.metric_name, value_format='%.15f'))
