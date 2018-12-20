@@ -45,16 +45,17 @@ dataset:
     - left
     - right
     - speed
+    - reverse
   labels:
     - steering
     - throttle
- 
+
 network:
     image_input_shape:
       height: 66
       width: 200
       channels: 3
-    variable_input_shape: 1
+    variable_input_shape: 2
 
 train:
   batch_size: 100

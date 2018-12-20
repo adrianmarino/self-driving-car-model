@@ -37,11 +37,9 @@ class SteeringWheelAngleDataGenerator(Sequence):
             labels[index] = augment_sample.labels
             index += 1
 
-        end_labels = []
-        for label in labels.transpose():
-            end_labels.append(label)
+        labels = [label for label in labels.transpose()]
 
-        return input_features, end_labels
+        return input_features, labels
 
     def __len__(self): return int(np.floor(len(self.dataset) / self.batch_size))
 
@@ -49,8 +47,9 @@ class SteeringWheelAngleDataGenerator(Sequence):
         if self.shuffle_per_epoch:
             self.dataset = self.dataset.shuffle()
 
-    def any_batch(self):
+    def any_batch(self, excluded_labels=[]):
         features, labels = self[self.random_index()]
-        return Dataset(features, ['image'], np.transpose(labels), self.dataset.label_columns)
+        label_columns = list(filter(lambda it : it not in excluded_labels, self.dataset.label_columns))
+        return Dataset(features, ['image'], np.transpose(labels), label_columns)
 
     def random_index(self): return random.randint(0, len(self) - 1)

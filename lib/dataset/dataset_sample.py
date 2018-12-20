@@ -9,21 +9,24 @@ class DatasetSample:
         self.labels_columns = labels_columns
 
     def show(self):
-        self.show_features()
-        self.show_labels()
+        print(self.str_features())
+        print(self.str_labels())
 
-    def show_labels(self):
-        print("Labels")
+    def str_labels(self):
+        labels = []
         for index, label in enumerate(zip(self.labels_columns, self.labels)):
-            print(f'\t- {label[0].capitalize()}: {label[1]}')
+            labels.append(f'\t- {label[0].capitalize()}: {label[1]}')
+        return 'Labels\n' + '\n'.join(labels)
 
-    def show_features(self, feature_columns=[]):
+    def str_features(self, feature_columns=[]):
         if len(feature_columns) == 0:
             feature_columns = self.feature_columns
 
-        print("Features")
+        features = []
         for feature_name in feature_columns:
-            print(f'\t- {feature_name.capitalize()}: {self.feature(feature_name)}')
+            features.append(f'\t- {feature_name.capitalize()}: {self.feature(feature_name)}')
+
+        return 'Features\n' + '\n'.join(features)
 
     def feature_image(self, name): return load_image(self.feature(name))
 
@@ -34,3 +37,5 @@ class DatasetSample:
     def feature(self, name):
         index = self.feature_columns.index(name)
         return self.features[index]
+    
+    def __str__(self): return f'{self.str_features()}\n{self.str_labels()}'

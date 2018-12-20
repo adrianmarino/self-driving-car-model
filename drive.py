@@ -30,7 +30,6 @@ def telemetry(sid, data):
                 current_camera_frame(data),
                 current_speed(data)
             )
-            throttle*=0.6
             print(f'<< Steering Angle: {steering_angle:0.6f} | Throttle: {throttle:0.6f} >>')
             send_control(steering_angle, throttle)
         except Exception as e:
@@ -70,7 +69,10 @@ def connect(sid, environ):
 def send_control(steering_angle, throttle):
     sio.emit(
         'steer',
-        data={'steering_angle': steering_angle.__str__(), 'throttle': throttle.__str__()},
+        data={
+            'steering_angle': steering_angle.__str__(),
+            'throttle': throttle.__str__()
+        },
         skip_sid=True
     )
 

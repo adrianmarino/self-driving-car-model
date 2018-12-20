@@ -6,7 +6,7 @@ import seaborn as sns
 
 def show_sample(sample):
     show_features(sample)
-    sample.show_labels()
+    print(sample.str_labels())
 
 
 def show_features(
@@ -14,7 +14,7 @@ def show_features(
         image_features_columns=['left', 'center', 'right']
 ):
     non_image_features_columns = list(set(sample.feature_columns) - set(image_features_columns))
-    sample.show_features(non_image_features_columns)
+    print(sample.str_features(non_image_features_columns))
     print('\t- Images:')
     images = [sample.feature_image(feature) for feature in image_features_columns]
     titles = [f'{label.capitalize()} Camera {images[0].shape}' for label in sample.feature_columns]
@@ -25,6 +25,7 @@ def show_features(
         figure_size=(40, 40),
         font_size=22
     )
+
 
 
 def show_augmented_sample(image, angle=None):
