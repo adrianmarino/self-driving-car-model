@@ -22,12 +22,8 @@ class NullSampleAugmenter(SampleAugmenter):
     def augment(self, sample):
         image_path = sample.feature_image('center')
         image = self.image_processor.process(image_path)
-        throttle = sample.label('throttle')
 
-        return DataSample(
-            features=[image, sample.feature('speed'), sample.feature('reverse')],
-            labels=[sample.label('steering'), throttle]
-        )
+        return DataSample(features=[image], labels=[sample.label('steering')])
 
 
 class SampleAugmenter(NullSampleAugmenter):
@@ -59,20 +55,9 @@ class SampleAugmenter(NullSampleAugmenter):
 
         image, steering_angle = self.__augment_image_and_steering_angle(sample)
 
-        throttle = self.__throttle_augmentation(
-            sample,
-            self.steer_threshold,
-            self.speed_threshold,
-            self.throttle_delta
-        )
-
         return DataSample(
-            features=[
-                self.image_processor.process(image),
-                sample.feature('speed'),
-                sample.feature('reverse')
-            ],
-            labels=[steering_angle, throttle]
+            features=[self.image_processor.process(image)],
+            labels=[steering_angle]
         )
 
     def __augment_image_and_steering_angle(self, sample):
@@ -101,8 +86,6 @@ class SampleAugmenter(NullSampleAugmenter):
         if np.random.rand() < 0.5 and \
                 abs(sample.label('steering')) > steer_threshold and \
                 sample.feature('speed') > speed_threshold:
-                    return throttle * throttle_delta
+            return throttle * throttle_delta
 
         return throttle
-
-

@@ -6,7 +6,7 @@ from lib.augmentation.sample_augmenter import NullSampleAugmenter
 import random
 
 
-class SteeringWheelAngleDataGenerator(Sequence):
+class DataGenerator(Sequence):
     def __init__(
             self,
             dataset,
@@ -14,7 +14,7 @@ class SteeringWheelAngleDataGenerator(Sequence):
             output_shape,
             batch_size,
             sample_augmenter,
-            shuffle_per_epoch=False
+            shuffle_per_epoch=True
     ):
         self.dataset = dataset
         self.input_shapes = input_shapes
@@ -32,9 +32,12 @@ class SteeringWheelAngleDataGenerator(Sequence):
         index = 0
         for sample in samples_batch:
             augment_sample = self.sample_augmenter.augment(sample)
+
             for augmented_features_index, augmented_features in enumerate(augment_sample.features):
                 input_features[augmented_features_index][index] = augmented_features
+
             labels[index] = augment_sample.labels
+
             index += 1
 
         labels = [label for label in labels.transpose()]
@@ -47,9 +50,8 @@ class SteeringWheelAngleDataGenerator(Sequence):
         if self.shuffle_per_epoch:
             self.dataset = self.dataset.shuffle()
 
-    def any_batch(self, excluded_labels=[]):
+    def any_batch(self):
         features, labels = self[self.random_index()]
-        label_columns = list(filter(lambda it : it not in excluded_labels, self.dataset.label_columns))
-        return Dataset(features, ['image'], np.transpose(labels), label_columns)
+        return Dataset(features, ['utils'], np.transpose(labels), self.dataset.label_columns)
 
     def random_index(self): return random.randint(0, len(self) - 1)

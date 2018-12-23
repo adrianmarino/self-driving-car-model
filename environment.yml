@@ -12,7 +12,7 @@ dependencies:
     - opencv3
     - pillow
     - scikit-learn
-    - scikit-image
+    - scikit-utils
     - scipy
     - h5py
     - eventlet

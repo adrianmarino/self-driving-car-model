@@ -1,5 +1,5 @@
 from keras.callbacks import Callback
-from lib.dict_utils import dist_values_append
+from lib.utils.dict_utils import dist_values_append
 from lib.model.metrics import MetricMeterBuilder
 from lib.model.model_utils import learning_rate_with_decay
 

@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from lib.image_utils import load_image
+from lib.utils.image_utils import load_image
 
 
 def choose_image(
@@ -11,7 +11,7 @@ def choose_image(
         adjustment_angle=0.25
 ):
     """
-    Randomly choose an image from the center, left or right, and adjust
+    Randomly choose an utils from the center, left or right, and adjust
     the steering angle.
     """
     choice = np.random.choice(3)
@@ -24,7 +24,7 @@ def choose_image(
 
 def random_image_flip(image, steering_angle):
     """
-    Randomly flip the image left <-> right, and adjust the steering angle.
+    Randomly flip the utils left <-> right, and adjust the steering angle.
     """
     if np.random.rand() < 0.5:
         image = cv2.flip(image, 1)
@@ -40,7 +40,7 @@ def random_image_translate(
         angle_delta=0.002
 ):
     """
-    Randomly shift the image vertically and horizontally (translation).
+    Randomly shift the utils vertically and horizontally (translation).
     """
     trans_x = range_x * (np.random.rand() - 0.5)
     trans_y = range_y * (np.random.rand() - 0.5)
@@ -56,7 +56,7 @@ def random_image_shadow(image, width, height):
     Generates and adds random shadow
     """
     # (x1, y1) and (x2, y2) forms a line
-    # xm, ym gives all the locations of the image
+    # xm, ym gives all the locations of the utils
     x1, y1 = width * np.random.rand(), 0
     x2, y2 = width * np.random.rand(), height
     xm, ym = np.mgrid[0:height, 0:width]
@@ -81,7 +81,7 @@ def random_image_shadow(image, width, height):
 
 def random_image_brightness(image):
     """
-    Randomly adjust brightness of the image.
+    Randomly adjust brightness of the utils.
     """
     # HSV (Hue, Saturation, Value) is also called HSB ('B' for Brightness).
     hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)

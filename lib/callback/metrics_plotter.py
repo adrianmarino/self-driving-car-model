@@ -5,7 +5,7 @@ from keras.callbacks import Callback
 from lib.model.metrics import MetricMeterBuilder
 
 
-class PlotLosses(Callback):
+class MetricsPlotter(Callback):
     def __init__(self, validation_generator, plot_interval=10, evaluate_interval=50):
         super().__init__()
         self.plot_interval = plot_interval
@@ -26,7 +26,7 @@ class PlotLosses(Callback):
     def on_batch_end(self, batch, logs={}):
         if batch % self.plot_interval == 0 and len(self.logs) > 1:
             clear_output(wait=True)
-            f, axes = plt.subplots(1, len(self.model.metrics_names), sharex=True, figsize=(40, 8))
+            f, axes = plt.subplots(1, len(self.model.metrics_names), figsize=(40, 8))
 
             index = 0
             for metric in self.model.metrics_names:

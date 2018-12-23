@@ -3,6 +3,8 @@ from IPython.display import SVG, display
 from keras.utils.vis_utils import model_to_dot
 import seaborn as sns
 
+from lib.utils.array_utils import wrap
+
 
 def show_sample(sample):
     show_features(sample)
@@ -43,40 +45,26 @@ def show_augmented_sample(image, angle=None):
     )
 
 
-def show_histogram(dataset, title=''):
-    histogram(dataset.labels, x_label="Steering angle", title=title)
-
-
-def histogram(
-        data,
-        x_label= "X values",
-        y_label= "Number of occurrences",
-        title='Title'
-):
-    sns.set(rc={'figure.figsize': (8, 5)})
-
-    b = sns.distplot(data, hist=True, kde=False)
-
-    b.axes.set_title(f'{title} (Size: {len(data)})', fontsize=15)
-    b.set_xlabel(x_label, fontsize=15)
-    b.set_ylabel(y_label, fontsize=15)
-
-    plt.show()
-
-
 def histograms(
         values,
         x_labels,
         titles,
         y_label="Number of occurrences",
-        size=(20, 5)
+        size=(20, 5),
+        vertical=False
 ):
     f, axes = plt.subplots(1, len(values), figsize=size, sharex=False)
 
+    axes = wrap(axes)
     for index, value in enumerate(values):
-        b = sns.distplot(value, ax=axes[index], hist=True, kde=False)
+        if vertical:
+            x_label, y_label = y_label, x_labels[index]
+        else:
+            x_label, y_label = x_labels[index], y_label
+
+        b = sns.distplot(value, ax=axes[index], hist=True, kde=False, vertical=vertical)
         b.axes.set_title(f'{titles[index]} - Size: {len(value)}', fontsize=15)
-        b.set_xlabel(x_labels[index], fontsize=15)
+        b.set_xlabel(x_label, fontsize=15)
         b.set_ylabel(y_label, fontsize=15)
 
 

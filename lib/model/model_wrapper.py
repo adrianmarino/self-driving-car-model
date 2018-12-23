@@ -1,4 +1,4 @@
-from lib.plot_utils import graph_model, show_values
+from lib.utils.plot_utils import graph_model, show_values
 
 
 class ModelWrapper:

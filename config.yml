@@ -44,18 +44,16 @@ dataset:
     - center
     - left
     - right
-    - speed
-    - reverse
   labels:
     - steering
-    - throttle
 
 network:
     image_input_shape:
       height: 66
       width: 200
       channels: 3
-    variable_input_shape: 2
+    speed_input_shape: 1
+    reserve_input_shape: 1
 
 train:
   batch_size: 100
@@ -79,3 +77,8 @@ train:
     crop:
       top_offset: 55
       bottom_offset: 25
+
+pi_controller:
+    set_point: 18
+    k_p: 0.2
+    k_i: 0.0006

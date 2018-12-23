@@ -1,4 +1,4 @@
-from lib.image_utils import vertical_crop_image, resize_image, rgb_to_yuv
+from lib.utils.image_utils import vertical_crop_image, resize_image, rgb_to_yuv
 
 
 class ImagePreprocessor:

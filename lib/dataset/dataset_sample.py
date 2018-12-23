@@ -1,4 +1,4 @@
-from lib.image_utils import load_image
+from lib.utils.image_utils import load_image
 
 
 class DatasetSample:

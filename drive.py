@@ -10,8 +10,8 @@ from flask import Flask
 
 from lib.config import Config
 from lib.image_preprocessor import ImagePreprocessor
-from lib.model.metrics import rmse
 from lib.model.model_factory import ModelFactory
+from lib.simple_pi_controller import SimplePIController
 
 sio = socketio.Server()
 app = Flask(__name__)
@@ -19,6 +19,7 @@ app = Flask(__name__)
 config = Config('./config.yml')
 model = None
 image_preprocessor = ImagePreprocessor.create_from(config)
+controller = SimplePIController.create_from(config)
 
 
 # registering event handler for the server
@@ -26,10 +27,8 @@ image_preprocessor = ImagePreprocessor.create_from(config)
 def telemetry(sid, data):
     if data:
         try:
-            steering_angle, throttle = predict(
-                current_camera_frame(data),
-                current_speed(data)
-            )
+            throttle = controller.update(current_speed(data))
+            steering_angle = predict_steering_angle(current_camera_frame(data))
             print(f'<< Steering Angle: {steering_angle:0.6f} | Throttle: {throttle:0.6f} >>')
             send_control(steering_angle, throttle)
         except Exception as e:
@@ -38,10 +37,9 @@ def telemetry(sid, data):
         sio.emit('manual', data={}, skip_sid=True)
 
 
-def predict(image, speed):
-    inputs = [image, np.array([speed])]
-    results = model.predict(inputs, batch_size=1)
-    return float(results[0]), float(results[1])
+def predict_steering_angle(image):
+    results = model.predict([image], batch_size=1)
+    return float(results[0])
 
 
 def current_speed(data): return float(data["speed"])
@@ -53,7 +51,7 @@ def current_camera_frame(data):
 
 
 def pre_process_image(frame):
-    # from PIL image to numpy array
+    # from PIL utils to numpy array
     frame = np.asarray(frame)
     frame = image_preprocessor.process(frame)
     # the model expects 4D array
@@ -85,7 +83,7 @@ if __name__ == '__main__':
         help='Path to model h5 file. Model should be on the same path.'
     )
 
-    model = ModelFactory.create_nvidia_model(metrics=[rmse])
+    model = ModelFactory.create_nvidia_model()
     model.load_weights(parser.parse_args().weights)
 
     # wrap Flask application with engineio's middleware
