@@ -29,6 +29,8 @@ dataset:
       - datasets/dataset_16/driving_log.csv
       - datasets/dataset_17/driving_log.csv
       - datasets/dataset_18/driving_log.csv
+      - datasets/dataset_0/driving_log.csv
+      - datasets/dataset_1/driving_log.csv
     test:
       - datasets/dataset_0/driving_log.csv
       - datasets/dataset_1/driving_log.csv

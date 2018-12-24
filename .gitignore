@@ -6,5 +6,5 @@
 **/*.cprof
 **/*.ipynb_checkpoints/
 datasets/
-checkpoints/
+# checkpoints/
 best/
