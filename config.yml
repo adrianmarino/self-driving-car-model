@@ -29,6 +29,8 @@ dataset:
       - datasets/dataset_16/driving_log.csv
       - datasets/dataset_17/driving_log.csv
       - datasets/dataset_18/driving_log.csv
+      - datasets/dataset_19/driving_log.csv
+      - datasets/dataset_20/driving_log.csv
       - datasets/dataset_0/driving_log.csv
       - datasets/dataset_1/driving_log.csv
     test:
@@ -81,6 +83,6 @@ train:
       bottom_offset: 25
 
 pi_controller:
-    set_point: 18
+    set_point: 15
     k_p: 0.2
     k_i: 0.0006
