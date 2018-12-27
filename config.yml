@@ -85,5 +85,5 @@ train:
 
 pi_controller:
     set_point: 18
-    k_p: 0.1
-    k_i: 0.0003
+    k_p: 0.2
+    k_i: 0.0006
