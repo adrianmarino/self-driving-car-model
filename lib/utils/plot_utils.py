@@ -30,7 +30,7 @@ def show_features(
 
 
 
-def show_augmented_sample(image, angle=None):
+def show_sample_data(image, angle=None):
     title = f'Shape: {image.shape}'
 
     if angle is not None:

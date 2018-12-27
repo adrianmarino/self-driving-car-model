@@ -89,14 +89,17 @@ validation_generator = DataGenerator(
 model = ModelFactory.create_nvidia_model(
     loss='mean_squared_error',
     metrics=[rmse],
-    optimizer=Adam(lr=0.001)
-    # optimizer = Adam(lr=0.0001)
+    # optimizer=Adam(lr=0.001)
+    optimizer = Adam(lr=0.0001)
     # optimizer = Adam(lr=0.00001)
 )
 
-last_weights_file_path = last_created_file_from("checkpoints/*.h5")
-print(f'last_weights_file_path: {last_weights_file_path}')
-model.load_weights(last_weights_file_path)
+try:
+    last_weights_file_path = last_created_file_from("checkpoints/*.h5")
+    print(f'last_weights_file_path: {last_weights_file_path}')
+    model.load_weights(last_weights_file_path)
+except:
+    print("Not found weights file")
 
 steps_per_epoch = int(len(train_set) / batch_size)
 epochs = 25
