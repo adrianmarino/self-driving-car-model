@@ -27,8 +27,6 @@
     </a>
 </p>
 
-[![](http://img.youtube.com/vi/FAYoct9GfQc/0.jpg)](http://www.youtube.com/watch?v=FAYoct9GfQc "Track 2 of self-driving-car-simator Version 1")
-
 ## Requeriments
 
 * conda
