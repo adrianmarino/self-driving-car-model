@@ -6,6 +6,8 @@
 * The model was based to [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/deep-learning-self-driving-cars/) network arquitecture.
 
 
+[![](http://img.youtube.com/vi/B5Q4MbLvtwI/0.jpg)](http://www.youtube.com/watch?v=B5Q4MbLvtwI "Track 2 of self-driving-car-simator V2")
+
 ## Requeriments
 
 * conda
@@ -34,7 +36,7 @@ train.model.py
 
 To train model using train.model.py:
 ```bash
-$ python train_model.py
+$ python train_model.pyd
 ```
 This script load model last weights from checkpoints path is exist. 
 
