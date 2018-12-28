@@ -10,7 +10,7 @@
 **Test 1**: Test model on a track that was used to generate training and test samples.
 
 <p align="center">
-    <a href="http://www.youtube.com/watch?v=B5Q4MbLvtwI">
+    <a href="http://www.youtube.com/watch?v=B5Q4MbLvtwI" target="_tab"/>
     <img src="http://img.youtube.com/vi/B5Q4MbLvtwI/0.jpg" 
         title="Track 2 of self-driving-car-simator Version 2" 
         alt="Track 2 of self-driving-car-simator Version 2"/>
@@ -20,7 +20,7 @@
 **Test 2**: Test model over a track that it never saw.
 
 <p align="center">
-    <a href="http://www.youtube.com/watch?v=FAYoct9GfQc">
+    <a href="http://www.youtube.com/watch?v=FAYoct9GfQc" target="_tab"/>
     <img src="http://img.youtube.com/vi/FAYoct9GfQc/0.jpg" 
         title="Track 2 of self-driving-car-simator Version 1" 
         alt="Track 2 of self-driving-car-simator Version 1"/>
