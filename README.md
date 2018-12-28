@@ -2,7 +2,7 @@
 
 * The model learn to control steering wheel angle.
 * Throttle & Break is controlled by a PI Controller.
-* The model was trained using all tracks of * Using [Udacity self-driving-car-simator](https://github.com/udacity/self-driving-car-sim) _Version 2_ and tested with track 2 of _Version 1_. The idea was try model with a track that it never saw.
+* The model was trained using all tracks of [Udacity self-driving-car-simator](https://github.com/udacity/self-driving-car-sim) _Version 2_ and tested with track 2 of _Version 1_. The idea was try model with a track that it never saw.
 * The model was based to [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/deep-learning-self-driving-cars/) network arquitecture.
 
 ## Tests
