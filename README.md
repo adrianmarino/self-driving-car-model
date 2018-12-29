@@ -45,7 +45,7 @@ $ conda env create --file environment.yml
 ```bash
 $ conda activate self-driving-car-model
 ```
-**Note**: This step is required after run `train_mode.py` or `drive.py`.
+**Note**: This step is required before run `train_mode.py` or `drive.py`.
 
 ## Train model
 
@@ -70,7 +70,7 @@ $ python train_model.py
 ```
 This script load model last weights from /checkpoints path if it exists. 
 
-**Step 5**: Monitor loss and steer RMSE train/validation metrics from [Tensorboard](https://www.tensorflow.org/guide/summaries_and_tensorboard). First of all you need run tensor board as follows:
+**Step 5**: Monitor train/validation loss and steering angle RMSE from [Tensorboard](https://www.tensorflow.org/guide/summaries_and_tensorboard). First of all you need run tensor board as follows:
 ```bash
 $ tensorboard --logdir logs
 ```
