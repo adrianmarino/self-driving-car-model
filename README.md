@@ -55,18 +55,28 @@ Self driving car model analysis
 `train_model.py` script. 
 First of all you need a dataset, but already exist a dataset that was created to train the model, so you can download this. To train model follow next steps:
 
-**Step 1**: Then to train model first of all download dataset from [here](https://drive.google.com/file/d/1O84dTrE2j1J9xhPmlJdVwRJ55WcJlMQN/view?usp=sharing) to project path. 
+**Step 1**: Activate environment.
+
+**Step 2**: Download dataset from [here](https://drive.google.com/file/d/1O84dTrE2j1J9xhPmlJdVwRJ55WcJlMQN/view?usp=sharing) to project path. 
  
-**Step 2**: Next extract dataset.
+**Step 3**: Extract dataset.
 ```bash
 $ 7z x self-driving-car-dataset.7z
 ```
 
-**Step 3**: To train model using `train_model.py` script:
+**Step 4**: Train model (using `train_model.py` script).
 ```bash
 $ python train_model.py
 ```
 This script load model last weights from /checkpoints path if it exists. 
+
+**Step 5**: Monitor loss and steer RMSE train/validation metrics from [Tensorboard](https://www.tensorflow.org/guide/summaries_and_tensorboard). First of all you need run tensor board as follows:
+```bash
+$ tensorboard --logdir logs
+```
+**Note**: `train_model.py` script write metrics under `./logs` directory and tensoboard read from this.
+
+**Step 6**: Go to [http://localhost:6006](http://localhost:6006) url.
 
 
 ## Play model
@@ -81,11 +91,7 @@ To test model with a track that it never saw use [self-driving-car-sim](https://
 
 **Step 3**: Activate environment.
 
-```bash
-$ conda activate self-driving-car-model
-```
-
-**Step 4**: execute model client.
+**Step 4**: Execute model client.
 
 ```bash
 $ python drive.py checkpoints/weights__loss_0.0525__rmse_0.2055.h5
