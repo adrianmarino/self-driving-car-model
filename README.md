@@ -29,12 +29,13 @@
 
 ## Requeriments
 
-* conda
-* A respectable video card (i.e. GeForce GTX 1060 or higher)
+* [anaconda](https://www.anaconda.com/download/#linux)
+* 7z
+* A respectable video card (i.e. [GeForce GTX 1060](https://www.nvidia.com/en-us/geforce/products/10series/geforce-gtx-1060/) or higher)
 
 ## Setup
 
-Create project environment:
+**Step 1**: Create project environment.
 
 ```bash
 $ conda env create --file environment.yml
@@ -44,20 +45,28 @@ $ conda env create --file environment.yml
 ```bash
 $ conda activate self-driving-car-model
 ```
-This last step is required adfer run train_mode.py or drive.py.
+**Note**: This step is required after run `train_mode.py` or `drive.py`.
 
 ## Train model
 
 You can train and adjust model from [
 Self driving car model analysis
 ](https://github.com/adrianmarino/self-driving-car-model/blob/master/model-analysis.ipynb) notebook or use 
-train.model.py
+`train_model.py` script. 
+First of all you need a dataset, but already exist a dataset that was created to train the model, so you can download this. To train model follow next steps:
 
-To train model using train.model.py:
+**Step 1**: Then to train model first of all download dataset from [here](https://drive.google.com/file/d/1O84dTrE2j1J9xhPmlJdVwRJ55WcJlMQN/view?usp=sharing) to project path. 
+ 
+**Step 2**: Next extract dataset.
 ```bash
-$ python train_model.pyd
+$ 7z x self-driving-car-dataset.7z
 ```
-This script load model last weights from checkpoints path is exist. 
+
+**Step 3**: To train model using `train_model.py` script:
+```bash
+$ python train_model.py
+```
+This script load model last weights from /checkpoints path if it exists. 
 
 
 ## Play model
