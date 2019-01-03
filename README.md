@@ -68,7 +68,9 @@ $ 7z x self-driving-car-dataset.7z
 ```bash
 $ python train_model.py
 ```
-This script load model last weights from /checkpoints path if it exists. 
+**Notes**
+* This script load model last weights from /checkpoints path if it exists.
+* Can change epochs and learning rate with --epochs value --lr value.
 
 **Step 5**: Monitor train/validation loss and steering angle RMSE from [Tensorboard](https://www.tensorflow.org/guide/summaries_and_tensorboard). First of all you need run tensor board as follows:
 ```bash
