@@ -9,6 +9,21 @@ from lib.augmentation.image_augmentation_utils import choose_image, \
 
 
 class SampleAugmenter:
+
+    @staticmethod
+    def create_from(image_preprocessor, cfg):
+        return SampleAugmenter(
+            image_preprocessor,
+            cfg['train.augment.threshold'],
+            cfg['train.augment.translate_range_x'],
+            cfg['train.augment.translate_range_y'],
+            cfg['train.augment.choose_image_adjustment_angle'],
+            cfg['train.augment.image_translate_angle_delta'],
+            cfg['train.augment.throttle.steer_threshold'],
+            cfg['train.augment.throttle.speed_threshold'],
+            cfg['train.augment.throttle.delta']
+        )
+
     def __init__(self, image_processor):
         self.image_processor = image_processor
 

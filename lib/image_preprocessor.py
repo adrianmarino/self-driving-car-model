@@ -5,12 +5,12 @@ class ImagePreprocessor:
     @staticmethod
     def create_from(config):
         return ImagePreprocessor(
-            top_offset=config['train']['preprocess']['crop']['top_offset'],
-            bottom_offset=config['train']['preprocess']['crop']['bottom_offset'],
+            top_offset=config['train.preprocess.crop.top_offset'],
+            bottom_offset=config['train.preprocess.crop.bottom_offset'],
             input_shape=(
-                config['network']['image_input_shape']['height'],
-                config['network']['image_input_shape']['width'],
-                config['network']['image_input_shape']['channels']
+                config['network.image_input_shape.height'],
+                config['network.image_input_shape.width'],
+                config['network.image_input_shape.channels']
             )
         )
 

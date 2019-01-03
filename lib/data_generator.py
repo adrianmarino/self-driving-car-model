@@ -7,6 +7,27 @@ import random
 
 
 class DataGenerator(Sequence):
+
+    @staticmethod
+    def create_from(train_set, train_augmenter, cfg, shuffle_per_epoch=True):
+        image_input_shape = [
+            (
+                cfg['network.image_input_shape.height'],
+                cfg['network.image_input_shape.width'],
+                cfg['network.image_input_shape.channels']
+            )
+        ]
+        output_shape = (1,)
+
+        return DataGenerator(
+            train_set,
+            image_input_shape,
+            output_shape,
+            cfg['train.batch_size'],
+            train_augmenter,
+            shuffle_per_epoch
+        )
+
     def __init__(
             self,
             dataset,

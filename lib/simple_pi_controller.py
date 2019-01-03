@@ -3,9 +3,9 @@ class SimplePIController:
     @staticmethod
     def create_from(config):
         return SimplePIController(
-            k_p=config['pi_controller']['k_p'],
-            k_i=config['pi_controller']['k_i'],
-            set_point=config['pi_controller']['set_point']
+            k_p=config['pi_controller.k_p'],
+            k_i=config['pi_controller.k_i'],
+            set_point=config['pi_controller.set_point']
         )
 
     def __init__(self, k_p=0.1, k_i=0.002, set_point=0.):

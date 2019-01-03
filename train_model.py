@@ -1,3 +1,4 @@
+import argparse
 import warnings
 
 # Model
@@ -26,100 +27,85 @@ def warn(*args, **kwargs):
 
 warnings.warn = warn
 
-cfg = Config('./config.yml')
 
-image_input_shape = (
-    cfg['network']['image_input_shape']['height'],
-    cfg['network']['image_input_shape']['width'],
-    cfg['network']['image_input_shape']['channels']
-)
-input_shapes = [image_input_shape]
-output_shape = (1,)
+def create_data_generators(cfg):
+    loader = DatasetLoader(cfg)
+    data_set = loader.load(features=cfg['dataset.features'], labels=cfg['dataset.labels'])
+    train_set, validation_set = data_set.split(percent=cfg['train.validation_set_percent'], shuffle=True)
 
-batch_size = cfg['train']['batch_size']
-augment_threshold = cfg['train']['augment']['threshold']
-translate_range_x = cfg['train']['augment']['translate_range_x']
-translate_range_y = cfg['train']['augment']['translate_range_y']
-top_offset = cfg['train']['preprocess']['crop']['top_offset']
-bottom_offset = cfg['train']['preprocess']['crop']['bottom_offset']
-steer_threshold = cfg['train']['augment']['throttle']['steer_threshold']
-speed_threshold = cfg['train']['augment']['throttle']['speed_threshold']
-throttle_delta = cfg['train']['augment']['throttle']['throttle_delta']
-choose_image_adjustment_angle = cfg['train']['augment']['choose_image_adjustment_angle']
-image_translate_angle_delta = cfg['train']['augment']['image_translate_angle_delta']
+    image_preprocessor = ImagePreprocessor.create_from(cfg)
 
-loader = DatasetLoader(cfg)
-data_set = loader.load(features=cfg['dataset']['features'], labels=cfg['dataset']['labels'])
-train_set, validation_set = data_set.split(percent=cfg['train']['validation_set_percent'], shuffle=True)
+    train_augmenter = SampleAugmenter.create_from(image_preprocessor, cfg)
+    train_generator = DataGenerator.create_from(train_set, train_augmenter, cfg)
 
-image_preprocessor = ImagePreprocessor(top_offset, bottom_offset, image_input_shape)
+    validation_augmenter = NullSampleAugmenter(image_preprocessor)
+    validation_generator = DataGenerator.create_from(validation_set, validation_augmenter, cfg, shuffle_per_epoch=False)
 
-train_augmenter = SampleAugmenter(
-    image_preprocessor,
-    augment_threshold,
-    translate_range_x,
-    translate_range_y,
-    choose_image_adjustment_angle,
-    image_translate_angle_delta,
-    steer_threshold,
-    speed_threshold,
-    throttle_delta
-)
+    return train_set, train_generator, validation_generator
 
-train_generator = DataGenerator(
-    train_set,
-    input_shapes,
-    output_shape,
-    batch_size,
-    train_augmenter,
-    shuffle_per_epoch=True
-)
 
-validation_augmenter = NullSampleAugmenter(image_preprocessor)
+def try_to_load_weights(model):
+    try:
+        last_weights_file_path = last_created_file_from("checkpoints/*.h5")
+        print(f'last_weights_file_path: {last_weights_file_path}')
+        model.load_weights(last_weights_file_path)
+    except:
+        print("Not found weights file")
 
-validation_generator = DataGenerator(
-    validation_set,
-    input_shapes,
-    output_shape,
-    batch_size,
-    validation_augmenter,
-    shuffle_per_epoch=False
-)
 
-model = ModelFactory.create_nvidia_model(
-    loss='mean_squared_error',
-    metrics=[rmse],
-    # optimizer=Adam(lr=0.001)
-    optimizer = Adam(lr=0.0001)
-    # optimizer = Adam(lr=0.00001)
-)
+def build_callbacks(cfg, monitor_metric='val_rmse', evaluate_interval=100):
+    return [
+        CheckpointFactory(path=cfg['train.checkpoint_path']).create(metric=monitor_metric),
+        EarlyStopping(monitor=monitor_metric, patience=4),
+        ValidationMetersOutput(validation_generator, evaluate_interval),
+        AdamLearningRateTracker(evaluate_interval),
+        TensorBoard(
+            log_dir='./logs',
+            histogram_freq=0,
+            write_graph=True,
+            write_images=True,
+            batch_size=cfg['train.batch_size'],
+            write_grads=True,
+            update_freq='batch'
+        )
+    ]
 
-try:
-    last_weights_file_path = last_created_file_from("checkpoints/*.h5")
-    print(f'last_weights_file_path: {last_weights_file_path}')
-    model.load_weights(last_weights_file_path)
-except:
-    print("Not found weights file")
 
-steps_per_epoch = int(len(train_set) / batch_size)
-epochs = 25
-monitor_metric = 'val_rmse'
-evaluate_interval = 100
-
-callbacks = [
-    CheckpointFactory(path=cfg['train']['checkpoint_path']).create(metric=monitor_metric),
-    EarlyStopping(monitor=monitor_metric, patience=4),
-    ValidationMetersOutput(validation_generator, evaluate_interval),
-    AdamLearningRateTracker(evaluate_interval),
-    TensorBoard(
-        log_dir='./logs',
-        histogram_freq=0,
-        write_graph=True,
-        write_images=True,
-        batch_size=batch_size,
-        write_grads=True,
-        update_freq='batch'
+def params(cfg):
+    parser = argparse.ArgumentParser(description='Train model')
+    parser.add_argument(
+        '--epochs',
+        help='Number of epochs to train.',
+        type=int,
+        default=int(cfg['train.epochs'])
     )
-]
+    parser.add_argument(
+        '--lr',
+        help='Learning rate.',
+        type=float,
+        default=float(cfg['train.lr'])
+    )
+    return parser.parse_args()
 
-model.train(train_generator, validation_generator, steps_per_epoch, epochs, callbacks)
+
+def create_model(params):
+    model = ModelFactory.create_nvidia_model(loss='mean_squared_error', metrics=[rmse], optimizer=Adam(lr=params.lr))
+    try_to_load_weights(model)
+    return model
+
+
+if __name__ == '__main__':
+    cfg = Config('./config.yml')
+    params = params(cfg)
+
+    train_set, train_generator, validation_generator = create_data_generators(cfg)
+    model = create_model(params)
+    steps_per_epoch = int(len(train_set) / cfg['train.batch_size'])
+
+    model.train(
+        train_generator,
+        validation_generator,
+        steps_per_epoch,
+        epochs=params.epochs,
+        callbacks=build_callbacks(cfg)
+    )

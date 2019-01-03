@@ -61,6 +61,8 @@ network:
     reserve_input_shape: 1
 
 train:
+  epochs: 25
+  lr: 0.001
   batch_size: 100
   validation_set_percent: .30
   augment:
@@ -74,7 +76,7 @@ train:
     throttle:
       steer_threshold: .5
       speed_threshold: 20
-      throttle_delta: .3
+      delta: .3
 
 
   checkpoint_path: checkpoints

@@ -19,7 +19,16 @@ class Config:
         with open(path, 'r') as file:
             self.config = yaml.load(file)
 
-    def __getitem__(self, property_name): return self.config[property_name]
+    def __getitem__(self, property_name):
+        if "." in property_name:
+            value = self.config
+            for key in property_name.split('.'):
+                value = value[key]
+                if value is None:
+                    raise Exception(f'Config: Not found value for {key} property of {property_name} path!')
+            return value
+
+        return self.config[property_name]
 
     def property(self, name):
         results = list(find_keys(self.config, name))
