@@ -7,7 +7,7 @@
 
 ## Test videos
 
-**Test 1**: Test model on a track that was used to generate training and test samples.
+**Test 1**: Test model on track that was used to generate training & test samples.
 
 <p align="center">
     <a href="http://www.youtube.com/watch?v=B5Q4MbLvtwI" target="_tab"/>
