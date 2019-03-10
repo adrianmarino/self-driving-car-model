@@ -5,7 +5,7 @@
 * The model was trained using all tracks of [Udacity self-driving-car-simator](https://github.com/udacity/self-driving-car-sim) _Version 2_ and tested with track 2 of _Version 1_ . The idea was try model with a track that it never saw.
 * The model was based to [End-to-End Deep Learning for Self-Driving Cars](https://devblogs.nvidia.com/deep-learning-self-driving-cars/) network arquitecture.
 
-## Tests
+## Test videos
 
 **Test 1**: Test model on a track that was used to generate training and test samples.
 
